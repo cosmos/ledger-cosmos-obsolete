@@ -7,3 +7,6 @@
 [submodule "deps/ledger-zxlib"]
 	path = deps/ledger-zxlib
 	url = https://github.com/ZondaX/ledger-zxlib
+[submodule "src/ledger"]
+	path = src/ledger
+	url = https://github.com/ZondaX/ledger-cosmos-app
