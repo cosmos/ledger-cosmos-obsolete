@@ -23,7 +23,7 @@ add_subdirectory(cmake/gtest)
 
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps/jsmn/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/deps/jsmn/src
 )
 
 ###############
@@ -37,13 +37,13 @@ file(GLOB_RECURSE APP_SRC
         )
 
 file(GLOB_RECURSE LIB_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/json_parser.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/transaction_parser.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/buffering.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/lib/json_parser.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/lib/transaction_parser.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/lib/buffering.c
         )
 
 file(GLOB_RECURSE JSMN_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps/jsmn/src/jsmn.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/deps/jsmn/src/jsmn.c
         )
 
 ###############
