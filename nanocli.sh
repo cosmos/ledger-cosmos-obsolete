@@ -46,10 +46,10 @@ handle_make()
 {
     # This function works in the scope of the container
     DOCKER_IMAGE=zondax/ledger-docker-bolos
-    BOLOS_SDK=/project/deps/nanos-secure-sdk
+    BOLOS_SDK=/project/src/ledger/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
-    JSMN_LIB=/project/deps/jsmn
-    JSON_PARSER_LIB=/project/src/lib
+    JSMN_LIB=/project/src/ledger/deps/jsmn
+    JSON_PARSER_LIB=/project/src/ledger/lib
 
     docker run -it --rm \
             -e JSMN_LIB=${JSMN_LIB} \
@@ -66,7 +66,7 @@ handle_exec()
 {
     # This function works in the scope of the container
     DOCKER_IMAGE=zondax/ledger-docker-bolos
-    BOLOS_SDK=/project/deps/nanos-secure-sdk
+    BOLOS_SDK=/project/src/ledger/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
 
     docker run -it --rm \
@@ -86,7 +86,7 @@ handle_ca()
 handle_load()
 {
     # This function works in the scope of the host
-    export BOLOS_SDK=${SCRIPT_DIR}/deps/nanos-secure-sdk
+    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger/deps/nanos-secure-sdk
     export BOLOS_ENV=/opt/bolos
     make -C ${SCRIPT_DIR}/src/ledger load
 }
@@ -94,7 +94,7 @@ handle_load()
 handle_delete()
 {
     # This function works in the scope of the host
-    export BOLOS_SDK=${SCRIPT_DIR}/deps/nanos-secure-sdk
+    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger/deps/nanos-secure-sdk
     export BOLOS_ENV=/opt/bolos
     make -C ${SCRIPT_DIR}/src/ledger delete
 }
