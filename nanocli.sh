@@ -49,7 +49,7 @@ handle_make()
     BOLOS_SDK=/project/src/ledger/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
     JSMN_LIB=/project/src/ledger/deps/jsmn
-    JSON_PARSER_LIB=/project/src/lib
+    JSON_PARSER_LIB=/project/src/ledger/lib
 
     docker run -it --rm \
             -e JSMN_LIB=${JSMN_LIB} \

@@ -23,6 +23,7 @@ add_subdirectory(cmake/gtest)
 
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/deps/jsmn/src
 )
 
@@ -66,13 +67,3 @@ add_executable(
 
 target_link_libraries(tests_example gtest_main jsmn json_parser)
 add_test(gtest ${PROJECT_BINARY_DIR}/tests_example)
-
-###############
-
-add_executable(
-        main_example
-        ${LIB_SRC}
-        ${APP_SRC}
-)
-
-target_link_libraries(main_example jsmn json_parser)
