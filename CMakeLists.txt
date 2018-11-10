@@ -40,7 +40,6 @@ file(GLOB_RECURSE APP_SRC
 file(GLOB_RECURSE LIB_SRC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/lib/json_parser.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/lib/transaction_parser.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/lib/buffering.c
         )
 
 file(GLOB_RECURSE JSMN_SRC
@@ -61,7 +60,6 @@ enable_testing()
 add_executable(
         tests_example
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/json_parser_tests.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/buffering_tests.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/transaction_parser_tests.cpp
 )
 
