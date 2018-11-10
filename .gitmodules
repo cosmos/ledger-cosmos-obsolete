@@ -1,3 +1,6 @@
 [submodule "src/ledger"]
 	path = src/ledger
 	url = https://github.com/ZondaX/ledger-cosmos-app
+[submodule "src/ledger-val"]
+	path = src/ledger-val
+	url = git@github.com:ZondaX/ledger-cosmos-val-app.git
