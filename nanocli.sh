@@ -42,31 +42,36 @@ handle_config()
 
 }
 
-handle_make()
+handle_ca()
+{
+    python -m ledgerblue.setupCustomCA --name dev --public 0425966465974196228d1d8a72e3c4cb6b62d6d5b8ffdeeba3af6677551e5413a60c47517e0bee963af31f5606c33a9483e8a6dc102c63bc295691ca05ee2c5d5c --targetId 0x31100003
+}
+
+# Ledger User App scripts
+
+handle_umake()
 {
     # This function works in the scope of the container
     DOCKER_IMAGE=zondax/ledger-docker-bolos
-    BOLOS_SDK=/project/src/ledger/deps/nanos-secure-sdk
+    BOLOS_SDK=/project/src/ledger-user/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
-    JSMN_LIB=/project/src/ledger/deps/jsmn
-    JSON_PARSER_LIB=/project/src/ledger/lib
+    JSMN_LIB=/project/src/ledger-user/deps/jsmn
 
     docker run -it --rm \
             -e JSMN_LIB=${JSMN_LIB} \
-            -e JSON_PARSER_LIB=${JSON_PARSER_LIB} \
             -e BOLOS_SDK=${BOLOS_SDK} \
             -e BOLOS_ENV=${BOLOS_ENV} \
             -u $(id -u) \
             -v $(pwd):/project \
             ${DOCKER_IMAGE} \
-            make -C /project/src/ledger $1
+            make -C /project/src/ledger-user $1
 }
 
-handle_exec()
+handle_uexec()
 {
     # This function works in the scope of the container
     DOCKER_IMAGE=zondax/ledger-docker-bolos
-    BOLOS_SDK=/project/src/ledger/deps/nanos-secure-sdk
+    BOLOS_SDK=/project/src/ledger-user/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
 
     docker run -it --rm \
@@ -78,34 +83,87 @@ handle_exec()
             $1
 }
 
-handle_ca()
-{
-    python -m ledgerblue.setupCustomCA --name dev --public 0425966465974196228d1d8a72e3c4cb6b62d6d5b8ffdeeba3af6677551e5413a60c47517e0bee963af31f5606c33a9483e8a6dc102c63bc295691ca05ee2c5d5c --targetId 0x31100003
-}
-
-handle_load()
+handle_uload()
 {
     # This function works in the scope of the host
-    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger/deps/nanos-secure-sdk
+    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger-user/deps/nanos-secure-sdk
     export BOLOS_ENV=/opt/bolos
-    make -C ${SCRIPT_DIR}/src/ledger load
+    make -C ${SCRIPT_DIR}/src/ledger-user load
 }
 
-handle_delete()
+handle_udelete()
 {
     # This function works in the scope of the host
-    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger/deps/nanos-secure-sdk
+    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger-user/deps/nanos-secure-sdk
     export BOLOS_ENV=/opt/bolos
-    make -C ${SCRIPT_DIR}/src/ledger delete
+    make -C ${SCRIPT_DIR}/src/ledger-user delete
+}
+
+# Ledger Validator App scripts
+
+handle_vmake()
+{
+    # This function works in the scope of the container
+    DOCKER_IMAGE=zondax/ledger-docker-bolos
+    BOLOS_SDK=/project/src/ledger-val/deps/nanos-secure-sdk
+    BOLOS_ENV=/opt/bolos
+    JSMN_LIB=/project/src/ledger-val/deps/jsmn
+
+    docker run -it --rm \
+            -e JSMN_LIB=${JSMN_LIB} \
+            -e BOLOS_SDK=${BOLOS_SDK} \
+            -e BOLOS_ENV=${BOLOS_ENV} \
+            -u $(id -u) \
+            -v $(pwd):/project \
+            ${DOCKER_IMAGE} \
+            make -C /project/src/ledger-val $1
+}
+
+handle_vexec()
+{
+    # This function works in the scope of the container
+    DOCKER_IMAGE=zondax/ledger-docker-bolos
+    BOLOS_SDK=/project/src/ledger-val/deps/nanos-secure-sdk
+    BOLOS_ENV=/opt/bolos
+
+    docker run -it --rm \
+            -e BOLOS_SDK=${BOLOS_SDK} \
+            -e BOLOS_ENV=${BOLOS_ENV} \
+            -u `id -u` \
+            -v $(pwd):/project \
+            ${DOCKER_IMAGE} \
+            $1
+}
+
+handle_vload()
+{
+    # This function works in the scope of the host
+    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger-val/deps/nanos-secure-sdk
+    export BOLOS_ENV=/opt/bolos
+    make -C ${SCRIPT_DIR}/src/ledger-val load
+}
+
+handle_vdelete()
+{
+    # This function works in the scope of the host
+    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger-val/deps/nanos-secure-sdk
+    export BOLOS_ENV=/opt/bolos
+    make -C ${SCRIPT_DIR}/src/ledger-val delete
 }
 
 case "$1" in
-    exec)       handle_exec $2;;
-    make)       handle_make $2;;
+    uexec)       handle_uexec $2;;
+    umake)       handle_umake $2;;
+    uload)       handle_uload;;
+    udelete)     handle_udelete;;
+
+    vexec)       handle_vexec $2;;
+    vmake)       handle_vmake $2;;
+    vload)       handle_vload;;
+    vdelete)     handle_vdelete;;
+
     config)     handle_config;;
     ca)         handle_ca;;
-    load)       handle_load;;
-    delete)     handle_delete;;
     *)
         echo "ERROR. Valid commands: exec, make, config, ca, load, delete"
         ;;
