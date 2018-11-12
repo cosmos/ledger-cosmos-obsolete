@@ -12,18 +12,27 @@ jobs:
       - run: cmake . && make
       - run: export GTEST_COLOR=1 && ctest -VV
 
-  build_ledger:
+  build_ledger_user:
     docker:
       - image: zondax/ledger-docker-bolos
     environment:
-      - BOLOS_SDK=/root/project/src/ledger/deps/nanos-secure-sdk
+      - BOLOS_SDK=/root/project/src/ledger-user/deps/nanos-secure-sdk
       - BOLOS_ENV=/opt/bolos
-      - JSMN_LIB=/root/project/src/ledger/deps/jsmn
-      - JSON_PARSER_LIB=/root/project/src/ledger/lib
     steps:
       - checkout
       - run: git submodule update --init --recursive
-      - run: make -C src/ledger
+      - run: make -C src/ledger-user
+
+  build_ledger_val:
+    docker:
+      - image: zondax/ledger-docker-bolos
+    environment:
+      - BOLOS_SDK=/root/project/src/ledger-val/deps/nanos-secure-sdk
+      - BOLOS_ENV=/opt/bolos
+    steps:
+      - checkout
+      - run: git submodule update --init --recursive
+      - run: make -C src/ledger-val
 
   build_go:
     docker:
@@ -35,22 +44,35 @@ jobs:
       - run: cd src/goclient; dep ensure -v
       - run: cd src/goclient; go build goclient.go
 
-  package_demo:
+  package_demo_user:
     docker:
       - image: zondax/ledger-docker-bolos
     environment:
       - BOLOS_SDK=/root/project/src/ledger/deps/nanos-secure-sdk
       - BOLOS_ENV=/opt/bolos
-      - JSMN_LIB=/root/project/src/ledger/deps/jsmn
-      - JSON_PARSER_LIB=/root/project/src/ledger/lib
     steps:
       - checkout
       - run: git submodule update --init --recursive
-      - run: make -C src/ledger package
+      - run: make -C src/ledger-user package
       - run: sudo apt-get -y install zip
-      - run: zip -r demo.zip /root/project/src/ledger/pkgdemo
+      - run: zip -r demo_user_app.zip /root/project/src/ledger-user/pkgdemo
       - store_artifacts:
-          path: demo.zip
+          path: demo_user_app.zip
+
+  package_demo_val:
+    docker:
+      - image: zondax/ledger-docker-bolos
+    environment:
+      - BOLOS_SDK=/root/project/src/ledger/deps/nanos-secure-sdk
+      - BOLOS_ENV=/opt/bolos
+    steps:
+      - checkout
+      - run: git submodule update --init --recursive
+      - run: make -C src/ledger-val package
+      - run: sudo apt-get -y install zip
+      - run: zip -r demo_val_app.zip /root/project/src/ledger-val/pkgdemo
+      - store_artifacts:
+          path: demo_val_app.zip
 
 workflows:
   version: 2
@@ -59,8 +81,12 @@ workflows:
       - build
       - build_ledger
       - build_go
-      - package_demo:
+      - package_demo_user:
           requires:
             - build
-            - build_ledger
+            - build_ledger_user
             - build_go
+      - package_demo_user:
+          requires:
+            - build
+            - build_ledger_val
