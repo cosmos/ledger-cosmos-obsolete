@@ -32,8 +32,8 @@ file(GLOB_RECURSE USER_JSMN_SRC
         )
 
 file(GLOB_RECURSE USER_LIB_SRC
-        src/ledger-user/src/json_parser.c
-        src/ledger-user/src/transaction_parser.c
+        src/ledger-user/src/lib/json_parser.c
+        src/ledger-user/src/lib/xtransaction_parser.c
         )
 file(GLOB_RECURSE TESTS_USER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/*.cpp)
 
@@ -59,8 +59,8 @@ file(GLOB_RECURSE VAL_JSMN_SRC
         )
 
 file(GLOB_RECURSE VAL_LIB_SRC
-        src/ledger-val/src/json_parser.c
-        src/ledger-val/src/validation_parser.c
+        src/ledger-val/src/lib/json_parser.c
+        src/ledger-val/src/lib/vote_parser.c
         )
 file(GLOB_RECURSE TESTS_VAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/val/*.cpp)
 
@@ -78,3 +78,18 @@ target_include_directories(test_val PUBLIC
 target_link_libraries(test_val gtest_main val_json_parser)
 
 add_test(gtest ${PROJECT_BINARY_DIR}/test_val)
+
+###############################################################
+# Force tests to depend from app compiling
+###############################################################
+add_custom_target(ledger_val_app
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/nanocli.sh vmake
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+add_custom_target(ledger_user_app
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/nanocli.sh umake
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        )
+
+add_dependencies(test_val ledger_val_app)
+add_dependencies(test_user ledger_user_app)

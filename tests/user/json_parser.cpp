@@ -22,7 +22,7 @@
 #include <string>
 #include <array>
 #include <jsmn.h>
-#include <json_parser.h>
+#include <lib/json_parser.h>
 
 namespace {
 std::string exec(const char *cmd) {

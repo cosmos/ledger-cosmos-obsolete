@@ -14,8 +14,8 @@
 *  limitations under the License.
 ********************************************************************************/
 
-#include "json_parser.h"
-#include "validation_parser.h"
+#include "lib/json_parser.h"
+#include "lib/vote_parser.h"
 
 #include "gtest/gtest.h"
 #include <stdlib.h>
@@ -24,82 +24,81 @@
 #include <memory>
 #include <stdexcept>
 #include <array>
-#include <jsmn.h>
 #include <string>
 
 namespace {
 
-TEST(ValidationParserTest, ParseRoundMin) {
+TEST(VoteParserTest, ParseRoundMin) {
 
     const char* transaction = R"({"height":0,"other":{"Hello world"},"round":0})";
     parsed_json_t parsed_json;
     json_parse(&parsed_json, transaction);
-    int8_t round = validation_parser_get_msg_round(&parsed_json, transaction, NULL);
+    int8_t round = vote_parser_get_msg_round(&parsed_json, transaction, NULL);
     EXPECT_EQ(round, 0) << "Round not parsed correctly";
 }
 
-TEST(ValidationParserTest, ParseHeightMin) {
+TEST(VoteParserTest, ParseHeightMin) {
 
     const char* transaction = R"({"height":0,"other":{"Hello world"},"round":100})";
     parsed_json_t parsed_json;
     json_parse(&parsed_json, transaction);
-    int64_t height = validation_parser_get_msg_height(&parsed_json, transaction, NULL);
+    int64_t height = vote_parser_get_msg_height(&parsed_json, transaction, NULL);
     EXPECT_EQ(height, 0) << "Height not parsed correctly";
 }
 
-TEST(ValidationParserTest, ParseRoundDecimal) {
+TEST(VoteParserTest, ParseRoundDecimal) {
     const char* transaction = R"({"height":200,"other":{"Hello world"},"round":100})";
     parsed_json_t parsed_json;
     json_parse(&parsed_json, transaction);
-    int8_t round = validation_parser_get_msg_round(&parsed_json, transaction, NULL);
+    int8_t round = vote_parser_get_msg_round(&parsed_json, transaction, NULL);
     EXPECT_EQ(round, 100) << "Round not parsed correctly";
 }
 
-TEST(ValidationParserTest, ParseHeightDecimal) {
+TEST(VoteParserTest, ParseHeightDecimal) {
     const char* transaction = R"({"height":200,"other":{"Hello world"},"round":100})";
     parsed_json_t parsed_json;
     json_parse(&parsed_json, transaction);
-    int64_t height = validation_parser_get_msg_height(&parsed_json, transaction, NULL);
+    int64_t height = vote_parser_get_msg_height(&parsed_json, transaction, NULL);
     EXPECT_EQ(height, 200) << "Height not parsed correctly";
 }
 
-TEST(ValidationParserTest, ParseRoundMax) {
+TEST(VoteParserTest, ParseRoundMax) {
 
     const char *transaction = R"({"round":127,"height":200,"other":{"Hello world"}})";
     parsed_json_t parsed_json;
     json_parse(&parsed_json, transaction);
-    int8_t round = validation_parser_get_msg_round(&parsed_json, transaction, NULL);
+    int8_t round = vote_parser_get_msg_round(&parsed_json, transaction, NULL);
     EXPECT_EQ(round, std::numeric_limits<int8_t>::max()) << "Round not parsed correctly";
 }
 
-TEST(ValidationParserTest, ParseHeightMax) {
+TEST(VoteParserTest, ParseHeightMax) {
 
     const char* transaction = R"({"round":100,"height":9223372036854775807,"other":{"Hello world"}})";
     parsed_json_t parsed_json;
     json_parse(&parsed_json, transaction);
-    int64_t height = validation_parser_get_msg_height(&parsed_json, transaction, NULL);
+    int64_t height = vote_parser_get_msg_height(&parsed_json, transaction, NULL);
     EXPECT_EQ(height, std::numeric_limits<int64_t>::max()) << "Height not parsed correctly";
 }
 
-TEST(ValidationParserTest, Parse_NegativeHeight) {
+TEST(VoteParserTest, Parse_NegativeHeight) {
 
     const char* transaction = R"({"height":-200,"other":{"Hello world"},"round":100})";
     parsed_json_t parsed_json;
     json_parse(&parsed_json, transaction);
-    int64_t height = validation_parser_get_msg_height(&parsed_json, transaction, NULL);
+    int64_t height = vote_parser_get_msg_height(&parsed_json, transaction, NULL);
     EXPECT_EQ(-200, height) << "Height not parsed correctly";
 }
 
-TEST(ValidationParserTest, Parse_NegativeRound) {
+TEST(VoteParserTest, Parse_NegativeRound) {
 
     const char* transaction = R"({"round":-100,"height":200,"other":{"Hello world"}})";
     parsed_json_t parsed_json;
     json_parse(&parsed_json, transaction);
-    int8_t round = validation_parser_get_msg_round(&parsed_json, transaction, NULL);
+    int8_t round = vote_parser_get_msg_round(&parsed_json, transaction, NULL);
     EXPECT_EQ(-100, round) << "Round not parsed correctly";
 }
 
-TEST(ValidationParserTest, ValidateJson_HexHeight) {
+TEST(VoteParserTest, ValidateJson_HexHeight) {
 
     const char* transaction = R"({"height":0xFF,"other":{"Hello world"},"round":100})";
     parsed_json_t parsed_json;
@@ -108,7 +107,7 @@ TEST(ValidationParserTest, ValidateJson_HexHeight) {
     EXPECT_STREQ("Could not parse height", error) << "Json validation not working correctly";
 }
 
-TEST(ValidationParserTest, ValidateJson_HexRound) {
+TEST(VoteParserTest, ValidateJson_HexRound) {
 
     const char* transaction = R"({"height":200,"other":{"Hello world"},"round":0xAA})";
     parsed_json_t parsed_json;
@@ -117,7 +116,7 @@ TEST(ValidationParserTest, ValidateJson_HexRound) {
     EXPECT_STREQ("Could not parse round", error) << "Json validation not working correctly";
 }
 
-TEST(ValidationParserTest, ValidateJson_Correct) {
+TEST(VoteParserTest, ValidateJson_Correct) {
 
     const char* transaction = R"({"height":200,"other":{"Hello world"},"round":100})";
     parsed_json_t parsed_json;
@@ -126,7 +125,7 @@ TEST(ValidationParserTest, ValidateJson_Correct) {
     EXPECT_EQ(NULL, error) << "Json validation not working correctly";
 }
 
-TEST(ValidationParserTest, ValidateJson_NotSorted) {
+TEST(VoteParserTest, ValidateJson_NotSorted) {
 
     const char* transaction = R"({"height":200,"round":100,"other":{"Hello world"}})";
     parsed_json_t parsed_json;
@@ -135,7 +134,7 @@ TEST(ValidationParserTest, ValidateJson_NotSorted) {
     EXPECT_STREQ("Dictionaries are not sorted", error) << "Json validation should fail";
 }
 
-TEST(ValidationParserTest, ValidateJson_Whitespaces) {
+TEST(VoteParserTest, ValidateJson_Whitespaces) {
 
     const char* transaction = R"({"height": 200,"other":{"Hello world"},"round": 100})";
     parsed_json_t parsed_json;

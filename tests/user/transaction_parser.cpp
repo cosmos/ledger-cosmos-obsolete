@@ -22,8 +22,8 @@
 #include <string>
 #include <array>
 #include <jsmn.h>
-#include <json_parser.h>
-#include <transaction_parser.h>
+#include <lib/json_parser.h>
+#include <lib/transaction_parser.h>
 
 namespace {
 // Test parsing real Cosmos transactions

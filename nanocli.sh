@@ -57,7 +57,7 @@ handle_umake()
     BOLOS_ENV=/opt/bolos
     JSMN_LIB=/project/src/ledger-user/deps/jsmn
 
-    docker run -it --rm \
+    docker run -i --rm \
             -e JSMN_LIB=${JSMN_LIB} \
             -e BOLOS_SDK=${BOLOS_SDK} \
             -e BOLOS_ENV=${BOLOS_ENV} \
@@ -74,7 +74,7 @@ handle_uexec()
     BOLOS_SDK=/project/src/ledger-user/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
 
-    docker run -it --rm \
+    docker run -i --rm \
             -e BOLOS_SDK=${BOLOS_SDK} \
             -e BOLOS_ENV=${BOLOS_ENV} \
             -u `id -u` \
@@ -109,7 +109,7 @@ handle_vmake()
     BOLOS_ENV=/opt/bolos
     JSMN_LIB=/project/src/ledger-val/deps/jsmn
 
-    docker run -it --rm \
+    docker run -i --rm \
             -e JSMN_LIB=${JSMN_LIB} \
             -e BOLOS_SDK=${BOLOS_SDK} \
             -e BOLOS_ENV=${BOLOS_ENV} \
@@ -126,7 +126,7 @@ handle_vexec()
     BOLOS_SDK=/project/src/ledger-val/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
 
-    docker run -it --rm \
+    docker run -i --rm \
             -e BOLOS_SDK=${BOLOS_SDK} \
             -e BOLOS_ENV=${BOLOS_ENV} \
             -u `id -u` \
