@@ -14,9 +14,6 @@
 *  limitations under the License.
 ********************************************************************************/
 
-#include "lib/json_parser.h"
-#include "lib/vote_parser.h"
-
 #include "gtest/gtest.h"
 #include <stdlib.h>
 #include <cstdio>
@@ -25,121 +22,153 @@
 #include <stdexcept>
 #include <array>
 #include <string>
+#include "lib/vote_parser.h"
 
 namespace {
 
-TEST(VoteParserTest, ParseRoundMin) {
+// https://github.com/tendermint/tendermint/blob/develop/docs/spec/blockchain/encoding.md#signed-messages
+// https://github.com/tendermint/tendermint/blob/master/types/vote_test.go
 
-    const char* transaction = R"({"height":0,"other":{"Hello world"},"round":0})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    int8_t round = vote_parser_get_msg_round(&parsed_json, transaction, NULL);
-    EXPECT_EQ(round, 0) << "Round not parsed correctly";
+TEST(VoteParserTest, Empty) {
+    std::vector<uint8_t> vote_data{};
+
+    vote_t vote;
+    parse_error_t error = vote_amino_parse(vote_data.data(),
+                                           vote_data.size(),
+                                           &vote);
+
+    EXPECT_EQ(parse_unexpected_buffer_end, error);
 }
 
-TEST(VoteParserTest, ParseHeightMin) {
+TEST(VoteParserTest, Invalid) {
+    std::vector<uint8_t> vote_data{0xFF, 0xFF};
 
-    const char* transaction = R"({"height":0,"other":{"Hello world"},"round":100})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    int64_t height = vote_parser_get_msg_height(&parsed_json, transaction, NULL);
-    EXPECT_EQ(height, 0) << "Height not parsed correctly";
+    vote_t vote;
+    parse_error_t error = vote_amino_parse(vote_data.data(),
+                                           vote_data.size(),
+                                           &vote);
+
+    EXPECT_EQ(parse_unexpected_type_value, error);
 }
 
-TEST(VoteParserTest, ParseRoundDecimal) {
-    const char* transaction = R"({"height":200,"other":{"Hello world"},"round":100})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    int8_t round = vote_parser_get_msg_round(&parsed_json, transaction, NULL);
-    EXPECT_EQ(round, 100) << "Round not parsed correctly";
+TEST(VoteParserTest, AllDefaults) {
+    std::vector<uint8_t> vote_data{0x22, 0xb, 0x8, 0x80, 0x92, 0xb8, 0xc3, 0x98, 0xfe, 0xff, 0xff, 0xff, 0x1};
+
+    vote_t vote;
+    parse_error_t error = vote_amino_parse(vote_data.data(),
+                                           vote_data.size(),
+                                           &vote);
+
+    EXPECT_EQ(parse_unexpected_type_value, error);
 }
 
-TEST(VoteParserTest, ParseHeightDecimal) {
-    const char* transaction = R"({"height":200,"other":{"Hello world"},"round":100})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    int64_t height = vote_parser_get_msg_height(&parsed_json, transaction, NULL);
-    EXPECT_EQ(height, 200) << "Height not parsed correctly";
+TEST(VoteParserTest, DefaultData) {
+    std::vector<uint8_t> vote_data{
+        0x8, 0x1,
+        0x22, 0xb, 0x8, 0x80, 0x92, 0xb8, 0xc3, 0x98, 0xfe, 0xff, 0xff, 0xff, 0x1};
+
+    vote_t vote;
+    parse_error_t error = vote_amino_parse(vote_data.data(),
+                                           vote_data.size(),
+                                           &vote);
+
+    EXPECT_EQ(parse_ok, error);
+
+    EXPECT_EQ(1, vote.Type) << "Type not parsed correctly";
+    EXPECT_EQ(0, vote.Round) << "Round not parsed correctly";
+    EXPECT_EQ(0, vote.Height) << "Height not parsed correctly";
 }
 
-TEST(VoteParserTest, ParseRoundMax) {
+TEST(VoteParserTest, BasicPreVote) {
+    std::vector<uint8_t> vote_data{
+        0x8,                                    // (field_number << 3) | wire_type
+        0x1,                                    // PrevoteType
+        0x11,                                   // (field_number << 3) | wire_type
+        0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, // height
+        0x19,                                   // (field_number << 3) | wire_type
+        0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, // round
+        0x22, // (field_number << 3) | wire_type
+        // remaining fields (timestamp):
+        0xb, 0x8, 0x80, 0x92, 0xb8, 0xc3, 0x98, 0xfe, 0xff, 0xff, 0xff, 0x1};
 
-    const char *transaction = R"({"round":127,"height":200,"other":{"Hello world"}})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    int8_t round = vote_parser_get_msg_round(&parsed_json, transaction, NULL);
-    EXPECT_EQ(round, std::numeric_limits<int8_t>::max()) << "Round not parsed correctly";
+    vote_t vote;
+    parse_error_t error = vote_amino_parse(vote_data.data(),
+                                           vote_data.size(),
+                                           &vote);
+
+    EXPECT_EQ(parse_ok, error);
+
+    EXPECT_EQ(1, vote.Type) << "Type not parsed correctly";
+    EXPECT_EQ(1, vote.Height) << "Round not parsed correctly";
+    EXPECT_EQ(1, vote.Round) << "Height not parsed correctly";
 }
 
-TEST(VoteParserTest, ParseHeightMax) {
+TEST(VoteParserTest, BasicPrecommit) {
+    std::vector<uint8_t> vote_data{
+        0x8,                                    // (field_number << 3) | wire_type
+        0x2,                                    // PrecommitType
+        0x11,                                   // (field_number << 3) | wire_type
+        0x5, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, // height
+        0x19,                                   // (field_number << 3) | wire_type
+        0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, // round
+        0x22, // (field_number << 3) | wire_type
+        // remaining fields (timestamp):
+        0xb, 0x8, 0x80, 0x92, 0xb8, 0xc3, 0x98, 0xfe, 0xff, 0xff, 0xff, 0x1};
 
-    const char* transaction = R"({"round":100,"height":9223372036854775807,"other":{"Hello world"}})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    int64_t height = vote_parser_get_msg_height(&parsed_json, transaction, NULL);
-    EXPECT_EQ(height, std::numeric_limits<int64_t>::max()) << "Height not parsed correctly";
+    vote_t vote;
+    parse_error_t error = vote_amino_parse(vote_data.data(),
+                                           vote_data.size(),
+                                           &vote);
+
+    EXPECT_EQ(parse_ok, error);
+
+    EXPECT_EQ(2, vote.Type) << "Type not parsed correctly";
+    EXPECT_EQ(5, vote.Height) << "Round not parsed correctly";
+    EXPECT_EQ(7, vote.Round) << "Height not parsed correctly";
 }
 
-TEST(VoteParserTest, Parse_NegativeHeight) {
+TEST(VoteParserTest, MissingRound) {
+    std::vector<uint8_t> vote_data{
+        0x8,                                    // (field_number << 3) | wire_type
+        0x2,                                    // PrecommitType
+        0x11,                                   // (field_number << 3) | wire_type
+        0x5, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, // height
+        0x22, // (field_number << 3) | wire_type
+        // remaining fields (timestamp):
+        0xb, 0x8, 0x80, 0x92, 0xb8, 0xc3, 0x98, 0xfe, 0xff, 0xff, 0xff, 0x1};
 
-    const char* transaction = R"({"height":-200,"other":{"Hello world"},"round":100})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    int64_t height = vote_parser_get_msg_height(&parsed_json, transaction, NULL);
-    EXPECT_EQ(-200, height) << "Height not parsed correctly";
+    vote_t vote;
+    parse_error_t error = vote_amino_parse(vote_data.data(),
+                                           vote_data.size(),
+                                           &vote);
+
+    EXPECT_EQ(parse_ok, error);
+
+    EXPECT_EQ(2, vote.Type) << "Type not parsed correctly";
+    EXPECT_EQ(5, vote.Height) << "Round not parsed correctly";
+    EXPECT_EQ(0, vote.Round) << "Height not parsed correctly";
 }
 
-TEST(VoteParserTest, Parse_NegativeRound) {
+TEST(VoteParserTest, MissingHeight) {
+    std::vector<uint8_t> vote_data{
+        0x8,                                    // (field_number << 3) | wire_type
+        0x2,                                    // PrecommitType
+        0x19,                                   // (field_number << 3) | wire_type
+        0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, // round
+        0x22, // (field_number << 3) | wire_type
+        // remaining fields (timestamp):
+        0xb, 0x8, 0x80, 0x92, 0xb8, 0xc3, 0x98, 0xfe, 0xff, 0xff, 0xff, 0x1};
 
-    const char* transaction = R"({"round":-100,"height":200,"other":{"Hello world"}})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    int8_t round = vote_parser_get_msg_round(&parsed_json, transaction, NULL);
-    EXPECT_EQ(-100, round) << "Round not parsed correctly";
+    vote_t vote;
+    parse_error_t error = vote_amino_parse(vote_data.data(),
+                                           vote_data.size(),
+                                           &vote);
+
+    EXPECT_EQ(parse_ok, error);
+
+    EXPECT_EQ(2, vote.Type) << "Type not parsed correctly";
+    EXPECT_EQ(0, vote.Height) << "Round not parsed correctly";
+    EXPECT_EQ(7, vote.Round) << "Height not parsed correctly";
 }
 
-TEST(VoteParserTest, ValidateJson_HexHeight) {
-
-    const char* transaction = R"({"height":0xFF,"other":{"Hello world"},"round":100})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    const char* error = json_validate(&parsed_json, transaction);
-    EXPECT_STREQ("Could not parse height", error) << "Json validation not working correctly";
-}
-
-TEST(VoteParserTest, ValidateJson_HexRound) {
-
-    const char* transaction = R"({"height":200,"other":{"Hello world"},"round":0xAA})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    const char* error = json_validate(&parsed_json, transaction);
-    EXPECT_STREQ("Could not parse round", error) << "Json validation not working correctly";
-}
-
-TEST(VoteParserTest, ValidateJson_Correct) {
-
-    const char* transaction = R"({"height":200,"other":{"Hello world"},"round":100})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    const char* error = json_validate(&parsed_json, transaction);
-    EXPECT_EQ(NULL, error) << "Json validation not working correctly";
-}
-
-TEST(VoteParserTest, ValidateJson_NotSorted) {
-
-    const char* transaction = R"({"height":200,"round":100,"other":{"Hello world"}})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    const char* error = json_validate(&parsed_json, transaction);
-    EXPECT_STREQ("Dictionaries are not sorted", error) << "Json validation should fail";
-}
-
-TEST(VoteParserTest, ValidateJson_Whitespaces) {
-
-    const char* transaction = R"({"height": 200,"other":{"Hello world"},"round": 100})";
-    parsed_json_t parsed_json;
-    json_parse(&parsed_json, transaction);
-    const char* error = json_validate(&parsed_json, transaction);
-    EXPECT_STREQ("Contains whitespace in the corpus", error) << "Json validation should fail";
-}
 }

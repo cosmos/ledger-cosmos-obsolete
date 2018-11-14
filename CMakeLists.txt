@@ -33,7 +33,7 @@ file(GLOB_RECURSE USER_JSMN_SRC
 
 file(GLOB_RECURSE USER_LIB_SRC
         src/ledger-user/src/lib/json_parser.c
-        src/ledger-user/src/lib/xtransaction_parser.c
+        src/ledger-user/src/lib/transaction_parser.c
         )
 file(GLOB_RECURSE TESTS_USER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/*.cpp)
 
@@ -54,28 +54,21 @@ add_test(gtest ${PROJECT_BINARY_DIR}/test_user)
 ######## Validator App
 ###############################################################
 ###############################################################
-file(GLOB_RECURSE VAL_JSMN_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-val/deps/jsmn/src/jsmn.c
-        )
-
 file(GLOB_RECURSE VAL_LIB_SRC
-        src/ledger-val/src/lib/json_parser.c
         src/ledger-val/src/lib/vote_parser.c
         )
 file(GLOB_RECURSE TESTS_VAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/val/*.cpp)
 
-add_library(val_json_parser STATIC ${VAL_LIB_SRC} ${VAL_JSMN_SRC})
-target_include_directories(val_json_parser PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-val/deps/jsmn/src
+add_library(val_parser STATIC ${VAL_LIB_SRC})
+target_include_directories(val_parser PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-val/deps/ledger-zxlib/include
         )
 
 add_executable(test_val ${TESTS_VAL_SRC})
 target_include_directories(test_val PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-val/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-val/deps/jsmn/src
         )
-target_link_libraries(test_val gtest_main val_json_parser)
+target_link_libraries(test_val gtest_main val_parser)
 
 add_test(gtest ${PROJECT_BINARY_DIR}/test_val)
 
