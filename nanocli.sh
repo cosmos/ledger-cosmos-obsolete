@@ -55,10 +55,8 @@ handle_umake()
     DOCKER_IMAGE=zondax/ledger-docker-bolos
     BOLOS_SDK=/project/src/ledger-user/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
-    JSMN_LIB=/project/src/ledger-user/deps/jsmn
 
     docker run -i --rm \
-            -e JSMN_LIB=${JSMN_LIB} \
             -e BOLOS_SDK=${BOLOS_SDK} \
             -e BOLOS_ENV=${BOLOS_ENV} \
             -u $(id -u) \
@@ -107,10 +105,8 @@ handle_vmake()
     DOCKER_IMAGE=zondax/ledger-docker-bolos
     BOLOS_SDK=/project/src/ledger-val/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
-    JSMN_LIB=/project/src/ledger-val/deps/jsmn
 
     docker run -i --rm \
-            -e JSMN_LIB=${JSMN_LIB} \
             -e BOLOS_SDK=${BOLOS_SDK} \
             -e BOLOS_ENV=${BOLOS_ENV} \
             -u $(id -u) \
