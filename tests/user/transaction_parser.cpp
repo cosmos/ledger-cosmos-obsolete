@@ -15,7 +15,6 @@
 ********************************************************************************/
 
 #include "gtest/gtest.h"
-#include "lib/transaction_parser.h"
 #include <cstdio>
 #include <iostream>
 #include <memory>
@@ -24,9 +23,9 @@
 #include <array>
 #include <jsmn.h>
 #include <lib/json_parser.h>
+#include <lib/transaction_parser.h>
 
 namespace {
-
 // Test parsing real Cosmos transactions
 
 void setup_context(
@@ -43,7 +42,7 @@ void setup_context(
 }
 
 void EXPECT_EQ_STR(const char *str1, const char *str2, const char *errorMsg) {
-    if (str1 != NULL & str2 != NULL) {
+    if (str1 != nullptr & str2 != nullptr) {
         EXPECT_TRUE(strcmp(str1, str2) == 0) << errorMsg << ", expected: " << str2 << ", received: " << str1;
     }
     else {

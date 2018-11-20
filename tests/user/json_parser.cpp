@@ -15,7 +15,6 @@
 ********************************************************************************/
 
 #include "gtest/gtest.h"
-#include "lib/json_parser.h"
 #include <cstdio>
 #include <iostream>
 #include <memory>

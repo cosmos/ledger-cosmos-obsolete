@@ -15,55 +15,74 @@
 #********************************************************************************
 cmake_minimum_required(VERSION 3.0)
 project(ledger-cosmos VERSION 0.0.0)
+enable_testing()
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
-
 add_subdirectory(cmake/gtest)
 
-include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/deps/jsmn/src
+##############################################################
+##############################################################
+####### User App
+##############################################################
+##############################################################
+# User static libs
+file(GLOB_RECURSE USER_JSMN_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/deps/jsmn/src/jsmn.c
+        )
+
+file(GLOB_RECURSE USER_LIB_SRC
+        src/ledger-user/src/lib/json_parser.c
+        src/ledger-user/src/lib/transaction_parser.c
+        )
+file(GLOB_RECURSE TESTS_USER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/*.cpp)
+
+add_library(user_json_parser STATIC ${USER_LIB_SRC} ${USER_JSMN_SRC})
+target_include_directories(user_json_parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/deps/jsmn/src)
+
+add_executable(test_user ${TESTS_USER_SRC})
+target_include_directories(test_user PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/deps/jsmn/src
 )
+target_link_libraries(test_user gtest_main user_json_parser)
 
-###############
+add_test(gtest ${PROJECT_BINARY_DIR}/test_user)
 
-file(GLOB_RECURSE TESTS_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp
+###############################################################
+###############################################################
+######## Validator App
+###############################################################
+###############################################################
+file(GLOB_RECURSE VAL_LIB_SRC
+        src/ledger-val/src/lib/vote_parser.c
+        )
+file(GLOB_RECURSE TESTS_VAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/val/*.cpp)
+
+add_library(val_parser STATIC ${VAL_LIB_SRC})
+target_include_directories(val_parser PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-val/deps/ledger-zxlib/include
         )
 
-file(GLOB_RECURSE APP_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/app/*.cpp
+add_executable(test_val ${TESTS_VAL_SRC})
+target_include_directories(test_val PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-val/src
         )
+target_link_libraries(test_val gtest_main val_parser)
 
-file(GLOB_RECURSE LIB_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/lib/json_parser.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/lib/transaction_parser.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/lib/buffering.c
-        )
+add_test(gtest ${PROJECT_BINARY_DIR}/test_val)
 
-file(GLOB_RECURSE JSMN_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/deps/jsmn/src/jsmn.c
-        )
-
-###############
-# jsmn as a C static lib
-add_library(jsmn STATIC ${JSMN_SRC})
-add_library(json_parser STATIC ${LIB_SRC})
-target_link_libraries(json_parser jsmn)
-
-###############
-
-include(CTest)
-enable_testing()
-
-add_executable(
-        tests_example
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/json_parser_tests.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/buffering_tests.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/transaction_parser_tests.cpp
+###############################################################
+# Force tests to depend from app compiling
+###############################################################
+add_custom_target(ledger_val_app
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/nanocli.sh vmake
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
+add_custom_target(ledger_user_app
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/nanocli.sh umake
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        )
 
-target_link_libraries(tests_example gtest_main jsmn json_parser)
-add_test(gtest ${PROJECT_BINARY_DIR}/tests_example)
+add_dependencies(test_val ledger_val_app)
+add_dependencies(test_user ledger_user_app)

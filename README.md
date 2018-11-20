@@ -22,10 +22,10 @@ Continuous integration generates a demo.zip. This includes firmware plus a shell
 
 # More info
 
-[Build instructions](./docs/BUILD.md)
+[Build instructions](src/ledger/docs/BUILD.md)
 
 **Specifications**
 
-- [APDU Protocol](./docs/PROTOSPEC.md)
-- [Transaction format](./docs/TXSPEC.md)
-- [User interface](./docs/UISPEC.md)
+- [APDU Protocol](src/ledger/docs/PROTOSPEC.md)
+- [Transaction format](src/ledger/docs/TXSPEC.md)
+- [User interface](src/ledger/docs/UISPEC.md)
