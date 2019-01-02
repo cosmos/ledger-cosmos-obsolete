@@ -56,11 +56,13 @@ add_test(gtest ${PROJECT_BINARY_DIR}/test_user)
 ###############################################################
 file(GLOB_RECURSE VAL_LIB_SRC
         src/ledger-val/src/lib/vote_parser.c
+        src/ledger-val/src/lib/vote_fsm.c
+        src/ledger-val/src/lib/vote.c
         )
 file(GLOB_RECURSE TESTS_VAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/val/*.cpp)
 
-add_library(val_parser STATIC ${VAL_LIB_SRC})
-target_include_directories(val_parser PUBLIC
+add_library(val_lib STATIC ${VAL_LIB_SRC})
+target_include_directories(val_lib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-val/deps/ledger-zxlib/include
         )
 
@@ -68,7 +70,7 @@ add_executable(test_val ${TESTS_VAL_SRC})
 target_include_directories(test_val PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-val/src
         )
-target_link_libraries(test_val gtest_main val_parser)
+target_link_libraries(test_val gtest_main val_lib)
 
 add_test(gtest ${PROJECT_BINARY_DIR}/test_val)
 
