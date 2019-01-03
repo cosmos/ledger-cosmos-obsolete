@@ -64,7 +64,7 @@ TEST(VoteParserTest, AllDefaults) {
 
 TEST(VoteParserTest, DefaultData) {
     std::vector<uint8_t> vote_data{
-        0x8, 0x1,
+        0x8, TYPE_PREVOTE,
         0x22, 0xb, 0x8, 0x80, 0x92, 0xb8, 0xc3, 0x98, 0xfe, 0xff, 0xff, 0xff, 0x1};
 
     vote_t vote;
@@ -73,7 +73,6 @@ TEST(VoteParserTest, DefaultData) {
                                            &vote);
 
     EXPECT_EQ(parse_ok, error);
-
     EXPECT_EQ(1, vote.Type) << "Type not parsed correctly";
     EXPECT_EQ(0, vote.Round) << "Round not parsed correctly";
     EXPECT_EQ(0, vote.Height) << "Height not parsed correctly";
@@ -81,8 +80,7 @@ TEST(VoteParserTest, DefaultData) {
 
 TEST(VoteParserTest, BasicPreVote) {
     std::vector<uint8_t> vote_data{
-        0x8,                                    // (field_number << 3) | wire_type
-        0x1,                                    // PrevoteType
+        0x8, TYPE_PREVOTE,                      // (field_number << 3) | wire_type + PrevoteType
         0x11,                                   // (field_number << 3) | wire_type
         0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, // height
         0x19,                                   // (field_number << 3) | wire_type
@@ -97,16 +95,14 @@ TEST(VoteParserTest, BasicPreVote) {
                                            &vote);
 
     EXPECT_EQ(parse_ok, error);
-
-    EXPECT_EQ(1, vote.Type) << "Type not parsed correctly";
+    EXPECT_EQ(TYPE_PREVOTE, vote.Type) << "Type not parsed correctly";
     EXPECT_EQ(1, vote.Height) << "Round not parsed correctly";
     EXPECT_EQ(1, vote.Round) << "Height not parsed correctly";
 }
 
 TEST(VoteParserTest, BasicPrecommit) {
     std::vector<uint8_t> vote_data{
-        0x8,                                    // (field_number << 3) | wire_type
-        0x2,                                    // PrecommitType
+        0x8, TYPE_PRECOMMIT,                    // (field_number << 3) | wire_type + PrecommitType
         0x11,                                   // (field_number << 3) | wire_type
         0x5, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, // height
         0x19,                                   // (field_number << 3) | wire_type
@@ -121,16 +117,14 @@ TEST(VoteParserTest, BasicPrecommit) {
                                            &vote);
 
     EXPECT_EQ(parse_ok, error);
-
-    EXPECT_EQ(2, vote.Type) << "Type not parsed correctly";
+    EXPECT_EQ(TYPE_PRECOMMIT, vote.Type) << "Type not parsed correctly";
     EXPECT_EQ(5, vote.Height) << "Round not parsed correctly";
     EXPECT_EQ(7, vote.Round) << "Height not parsed correctly";
 }
 
 TEST(VoteParserTest, MissingRound) {
     std::vector<uint8_t> vote_data{
-        0x8,                                    // (field_number << 3) | wire_type
-        0x2,                                    // PrecommitType
+        0x8, TYPE_PRECOMMIT,                    // (field_number << 3) | wire_type + PrecommitType
         0x11,                                   // (field_number << 3) | wire_type
         0x5, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, // height
         0x22, // (field_number << 3) | wire_type
@@ -143,16 +137,14 @@ TEST(VoteParserTest, MissingRound) {
                                            &vote);
 
     EXPECT_EQ(parse_ok, error);
-
-    EXPECT_EQ(2, vote.Type) << "Type not parsed correctly";
+    EXPECT_EQ(TYPE_PRECOMMIT, vote.Type) << "Type not parsed correctly";
     EXPECT_EQ(5, vote.Height) << "Round not parsed correctly";
     EXPECT_EQ(0, vote.Round) << "Height not parsed correctly";
 }
 
 TEST(VoteParserTest, MissingHeight) {
     std::vector<uint8_t> vote_data{
-        0x8,                                    // (field_number << 3) | wire_type
-        0x2,                                    // PrecommitType
+        0x8, TYPE_PRECOMMIT,                    // (field_number << 3) | wire_type + PrecommitType
         0x19,                                   // (field_number << 3) | wire_type
         0x7, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, // round
         0x22, // (field_number << 3) | wire_type
@@ -165,8 +157,7 @@ TEST(VoteParserTest, MissingHeight) {
                                            &vote);
 
     EXPECT_EQ(parse_ok, error);
-
-    EXPECT_EQ(2, vote.Type) << "Type not parsed correctly";
+    EXPECT_EQ(TYPE_PRECOMMIT, vote.Type) << "Type not parsed correctly";
     EXPECT_EQ(0, vote.Height) << "Round not parsed correctly";
     EXPECT_EQ(7, vote.Round) << "Height not parsed correctly";
 }
