@@ -34,16 +34,6 @@ jobs:
       - run: git submodule update --init --recursive
       - run: make -C src/ledger-val
 
-  build_go:
-    docker:
-      - image: golang:1.10
-    working_directory: /go/src/zondax/ledger-cosmos
-    steps:
-      - checkout
-      - run: cd src/goclient; go get -v -u github.com/golang/dep/cmd/dep
-      - run: cd src/goclient; dep ensure -v
-      - run: cd src/goclient; go build goclient.go
-
   package_demo_user:
     docker:
       - image: zondax/ledger-docker-bolos
@@ -79,13 +69,12 @@ workflows:
   build_all:
     jobs:
       - build
-      - build_ledger
-      - build_go
+      - build_ledger_user
+      - build_ledger_val
       - package_demo_user:
           requires:
             - build
             - build_ledger_user
-            - build_go
       - package_demo_user:
           requires:
             - build
