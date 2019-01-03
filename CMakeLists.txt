@@ -77,14 +77,19 @@ add_test(gtest ${PROJECT_BINARY_DIR}/test_val)
 ###############################################################
 # Force tests to depend from app compiling
 ###############################################################
-add_custom_target(ledger_val_app
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/nanocli.sh vmake
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
-add_custom_target(ledger_user_app
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/nanocli.sh umake
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        )
 
-add_dependencies(test_val ledger_val_app)
-add_dependencies(test_user ledger_user_app)
+set(DISABLE_DOCKER_BUILDS OFF  CACHE BOOL "Disables Docker Builds")
+
+if (NOT DISABLE_DOCKER_BUILDS)
+    add_custom_target(ledger_val_app
+            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/nanocli.sh vmake
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+    add_custom_target(ledger_user_app
+            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/nanocli.sh umake
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            )
+
+    add_dependencies(test_val ledger_val_app)
+    add_dependencies(test_user ledger_user_app)
+endif()
