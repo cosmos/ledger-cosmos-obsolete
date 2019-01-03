@@ -4,7 +4,7 @@
 
 > It is work in progress and subject to further modifications and testing.
 >
-> WARNING: DO NOT USE THIS APP IN A LEDGER WITH REAL FUNDS.**
+> WARNING: DO NOT USE THESE APPS IN LEDGER DEVICES WITH REAL FUNDS.**
 
 This repository contains two Ledger Nano S apps for Tendermint/Cosmos: 
 
