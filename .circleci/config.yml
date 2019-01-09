@@ -75,7 +75,7 @@ workflows:
           requires:
             - build
             - build_ledger_user
-      - package_demo_user:
+      - package_demo_val:
           requires:
             - build
             - build_ledger_val
