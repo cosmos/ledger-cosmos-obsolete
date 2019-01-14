@@ -29,6 +29,8 @@ namespace {
     TEST(VoteParserTest, NotInitialized) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         EXPECT_EQ(0, s.isInitialized);
         EXPECT_EQ(0, try_state_transition(&v, &s));
@@ -39,6 +41,8 @@ namespace {
     TEST(VoteParserTest, SameHeightRound_SameType) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         s.isInitialized = 1;
         s.vote.Type = TYPE_PROPOSAL;
@@ -55,6 +59,8 @@ namespace {
     TEST(VoteParserTest, SameHeightRound_NextType) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         s.isInitialized = 1;
         s.vote.Type = TYPE_PROPOSAL;
@@ -71,6 +77,8 @@ namespace {
     TEST(VoteParserTest, SameHeightRound_NextType2) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         s.isInitialized = 1;
         s.vote.Type = TYPE_PROPOSAL;
@@ -89,6 +97,8 @@ namespace {
     TEST(VoteParserTest, NextRound_SameType) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         s.isInitialized = 1;
         s.vote.Type = TYPE_PROPOSAL;
@@ -105,6 +115,8 @@ namespace {
     TEST(VoteParserTest, NextRound_NextType) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         s.isInitialized = 1;
         s.vote.Type = TYPE_PROPOSAL;
@@ -121,6 +133,8 @@ namespace {
     TEST(VoteParserTest, NextRound_NextType2) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         s.isInitialized = 1;
         s.vote.Type = TYPE_PROPOSAL;
@@ -139,6 +153,8 @@ namespace {
     TEST(VoteParserTest, NextHeight_SameType) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         s.isInitialized = 1;
         s.vote.Type = TYPE_PROPOSAL;
@@ -155,6 +171,8 @@ namespace {
     TEST(VoteParserTest, NextHeight_NextType) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         s.isInitialized = 1;
         s.vote.Type = TYPE_PROPOSAL;
@@ -171,6 +189,8 @@ namespace {
     TEST(VoteParserTest, NextHeight_NextType2) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         s.isInitialized = 1;
         s.vote.Type = TYPE_PROPOSAL;
@@ -187,6 +207,8 @@ namespace {
     TEST(VoteParserTest, DeviceTest1) {
         vote_t v;
         vote_state_t s;
+        memset(&v, 0, sizeof(v));
+        memset(&s, 0, sizeof(s));
 
         s.isInitialized = 1;
         s.vote.Type = TYPE_PREVOTE;
