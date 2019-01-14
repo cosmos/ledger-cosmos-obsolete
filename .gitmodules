@@ -3,4 +3,4 @@
 	url = https://github.com/ZondaX/ledger-cosmos-app
 [submodule "src/ledger-val"]
 	path = src/ledger-val
-	url = git@github.com:ZondaX/ledger-cosmos-val-app.git
+	url = git@github.com:tendermint/ledger-validator-app.git
