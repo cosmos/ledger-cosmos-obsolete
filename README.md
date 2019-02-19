@@ -20,7 +20,7 @@ For development purposes, this repo is recommended as it includes unit tests, to
 
 The Cosmos app is already available in [Ledger Live](https://www.ledger.com/pages/ledger-live)
 
-::: Until Voyager integration has been review, the app requires enabling *developer mode*
+::: Until Voyager integration has been reviewed, the app requires enabling *developer mode*
 
 - Open Ledger Live and go to Settings (gear icon on the right):
 
