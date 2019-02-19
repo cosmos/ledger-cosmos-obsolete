@@ -18,7 +18,7 @@ For development purposes, this repo is recommended as it includes unit tests, to
 
 ### Cosmos app
 
-The Cosmos app is already available in [Ledger Live](https://www.ledger.com/pages/ledger-live)
+The Cosmos app is already available in [Ledger Live](https://www.ledger.com/pages/ledger-live). Our preferred and recommended hardware wallet!
 
 ::: Until Voyager integration has been reviewed, the app requires enabling *developer mode*
 
