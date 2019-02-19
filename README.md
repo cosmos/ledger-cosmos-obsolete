@@ -37,7 +37,9 @@ The Cosmos app is already available in [Ledger Live](https://www.ledger.com/page
 
 ### Validator app
 
-The validator is still under review/development. In order to install the app please follow the build instructions in the following section.
+The validator app is still under review/development. 
+
+To install, please follow the build instructions in the following section.
 
 ---------------------
 
