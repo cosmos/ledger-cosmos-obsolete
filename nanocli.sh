@@ -53,7 +53,7 @@ handle_umake()
 {
     # This function works in the scope of the container
     DOCKER_IMAGE=zondax/ledger-docker-bolos
-    BOLOS_SDK=/project/src/ledger-user/deps/nanos-secure-sdk
+    BOLOS_SDK=/project/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
 
     docker run -i --rm \
@@ -69,7 +69,7 @@ handle_uexec()
 {
     # This function works in the scope of the container
     DOCKER_IMAGE=zondax/ledger-docker-bolos
-    BOLOS_SDK=/project/src/ledger-user/deps/nanos-secure-sdk
+    BOLOS_SDK=/project/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
 
     docker run -i --rm \
@@ -84,7 +84,7 @@ handle_uexec()
 handle_uload()
 {
     # This function works in the scope of the host
-    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger-user/deps/nanos-secure-sdk
+    export BOLOS_SDK=${SCRIPT_DIR}/deps/nanos-secure-sdk
     export BOLOS_ENV=/opt/bolos
     make -C ${SCRIPT_DIR}/src/ledger-user load
 }
@@ -92,7 +92,7 @@ handle_uload()
 handle_udelete()
 {
     # This function works in the scope of the host
-    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger-user/deps/nanos-secure-sdk
+    export BOLOS_SDK=${SCRIPT_DIR}/deps/nanos-secure-sdk
     export BOLOS_ENV=/opt/bolos
     make -C ${SCRIPT_DIR}/src/ledger-user delete
 }
@@ -103,7 +103,7 @@ handle_vmake()
 {
     # This function works in the scope of the container
     DOCKER_IMAGE=zondax/ledger-docker-bolos
-    BOLOS_SDK=/project/src/ledger-val/deps/nanos-secure-sdk
+    BOLOS_SDK=/project/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
 
     docker run -i --rm \
@@ -119,7 +119,7 @@ handle_vexec()
 {
     # This function works in the scope of the container
     DOCKER_IMAGE=zondax/ledger-docker-bolos
-    BOLOS_SDK=/project/src/ledger-val/deps/nanos-secure-sdk
+    BOLOS_SDK=/project/deps/nanos-secure-sdk
     BOLOS_ENV=/opt/bolos
 
     docker run -i --rm \
@@ -134,7 +134,7 @@ handle_vexec()
 handle_vload()
 {
     # This function works in the scope of the host
-    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger-val/deps/nanos-secure-sdk
+    export BOLOS_SDK=${SCRIPT_DIR}/deps/nanos-secure-sdk
     export BOLOS_ENV=/opt/bolos
     make -C ${SCRIPT_DIR}/src/ledger-val load
 }
@@ -142,7 +142,7 @@ handle_vload()
 handle_vdelete()
 {
     # This function works in the scope of the host
-    export BOLOS_SDK=${SCRIPT_DIR}/src/ledger-val/deps/nanos-secure-sdk
+    export BOLOS_SDK=${SCRIPT_DIR}/deps/nanos-secure-sdk
     export BOLOS_ENV=/opt/bolos
     make -C ${SCRIPT_DIR}/src/ledger-val delete
 }
