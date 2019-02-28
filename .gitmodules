@@ -4,3 +4,6 @@
 [submodule "src/ledger-val"]
 	path = src/ledger-val
 	url = git@github.com:tendermint/ledger-validator-app.git
+[submodule "deps/nanos-secure-sdk"]
+	path = deps/nanos-secure-sdk
+	url = git@github.com:LedgerHQ/nanos-secure-sdk.git
