@@ -37,9 +37,21 @@ The Cosmos app is already available in [Ledger Live](https://www.ledger.com/page
 
 ### Validator app
 
-The validator app is still under review/development. 
+The validator app is available in [Ledger Live](https://www.ledger.com/pages/ledger-live). 
+
+**The app has been released in TEST mode for now! WARNING: It is possible to exit without unplugging**
+
+![](docs/img/cosmos_app1.png)
+
+- Enable developer mode (last option):
+
+![](docs/img/cosmos_app2.png)
 
 To install, please follow the build instructions in the following section.
+
+- Now go back to manager and search for Cosmos:
+
+![](docs/img/tendermint_app.png)
 
 ---------------------
 
@@ -53,9 +65,9 @@ The following document describes how to build the apps: [Build instructions](doc
 
 ### Cosmos App
 
-- [APDU Protocol](https://github.com/ZondaX/ledger-cosmos-app/tree/master/docs/PROTOSPEC.md)
-- [Transaction format](https://github.com/ZondaX/ledger-cosmos-app/tree/master/docs/TXSPEC.md)
-- [User interface](https://github.com/ZondaX/ledger-cosmos-app/tree/master/docs/UISPEC.md)
+- [APDU Protocol](https://github.com/cosmos/ledger-cosmos-app/tree/master/docs/APDUSPEC.md)
+- [Transaction format](https://github.com/cosmos/ledger-cosmos-app/tree/master/docs/TXSPEC.md)
+- [User interface](https://github.com/cosmos/ledger-cosmos-app/tree/master/docs/UISPEC.md)
 
 ### Validator App
 
@@ -63,6 +75,6 @@ The target of this app are validators. The app signs votes/proposals via the Ten
 
 ### Specifications
 
-- [APDU Protocol](https://github.com/ZondaX/ledger-cosmos-val-app/blob/master/docs/APDUSPEC.md)
-- [Transaction format](https://github.com/ZondaX/ledger-cosmos-val-app/blob/master/docs/TXSPEC.md)
-- [User interface](https://github.com/ZondaX/ledger-cosmos-val-app/blob/master/docs/UISPEC.md)
+- [APDU Protocol](https://github.com/tendermint/ledger-validator-app/blob/master/docs/APDUSPEC.md)
+- [Transaction format](https://github.com/tendermint/ledger-validator-app/blob/master/docs/TXSPEC.md)
+- [User interface](https://github.com/tendermint/ledger-validator-app/blob/master/docs/UISPEC.md)
