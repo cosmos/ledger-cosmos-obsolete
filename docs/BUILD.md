@@ -10,7 +10,9 @@ git submodule update --init --recursive
 
 #### Ledger Nano S
 
-This project requires ledger firmware 1.4.2
+This project requires ledger firmware 1.5.5
+
+The current repository keeps track of Ledger's SDK but it is posible to override it by changing the git submodule.
 
 #### Docker CE
 
