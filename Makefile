@@ -41,30 +41,31 @@ build_tendermint:
 	$(DOCKER_IMAGE) \
 	make -C /project/src/ledger-val
 
-build: build_cosmos build_tendermint
-
-clean:
-	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
-	make -C $(LEDGER_TENDERMINT_SRC) clean
-
+clean_cosmos:
 	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
 	make -C $(LEDGER_COSMOS_SRC) clean
 
-uload: build
+clean_tendermint:
+	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
+	make -C $(LEDGER_TENDERMINT_SRC) clean
+
+load_cosmos: build_cosmos
 	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
 	make -C $(LEDGER_COSMOS_SRC) load
 
-vload: build
+load_tendermint: build_tendermint
 	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
 	make -C $(LEDGER_TENDERMINT_SRC) load
 
-udelete:
+delete_cosmos:
 	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
 	make -C $(LEDGER_COSMOS_SRC) delete
 
-vdelete:
+delete_tendermint:
 	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
 	make -C $(LEDGER_TENDERMINT_SRC) delete
 
-load: build uload vload
-delete: udelete vdelete
+build: clean_cosmos clean_tendermint
+build: build_cosmos build_tendermint
+load: build load_cosmos load_tendermint
+delete: delete_cosmos delete_tendermint
