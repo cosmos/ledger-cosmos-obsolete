@@ -14,12 +14,6 @@ This project requires ledger firmware 1.5.5
 
 The current repository keeps track of Ledger's SDK but it is posible to override it by changing the git submodule.
 
-#### Docker CE
-
-Install docker CE following this instructions:
-
-https://docs.docker.com/install/
-
 #### CircleCI CLI
 
 CircleCI allows compiling `BOLOS` firmware both in Linux and MacOS. The CLI will download a docker container ready to run.
@@ -28,14 +22,12 @@ To install, follow the instructions here:
 
 https://circleci.com/docs/2.0/local-cli/#installing-the-circleci-local-cli-on-macos-and-linux-distros
 
-#### Ledger Python Tools
+#### Docker CE
 
-Ledger firmware 1.4.2 requires ledgerblue >= 0.1.21. In most cases, `nanocli.sh` should be able to install all dependencies: 
+CircleCI CLI should have instructed you to install Docker. Just in case, you can find instructions here too:
 
-```bash
-./nanocli.sh config
-```
-It is possible that due to recent changes to the firmware/SDK some additional steps might be required.
+https://docs.docker.com/install/
+
 
 #### Ubuntu Dependencies
 Install the following packages:
@@ -52,6 +44,17 @@ Additionally you will need to:
 ```
 brew install libusb
 ```
+
+#### Ledger Python Tools
+
+Ledger firmware 1.5.5 requires ledgerblue >= 0.1.21. 
+
+In most cases, `make deps` should be able to install all dependencies: 
+
+```bash
+make deps
+```
+
 # Building
 There are different local builds:
 
@@ -72,23 +75,22 @@ export GTEST_COLOR=1 && ctest -VV
 ```
 
 ### BOLOS / Ledger firmware
-In order to keep builds reproducible, a bash script is provided.
+In order to keep builds reproducible, a Makefile is provided.
 
-The script will build the firmware in a docker container and leave the binary in the correct directory.
+The Makefile will build the firmware in a docker container and leave the binary in the correct directory.
 
 **Build**
 
 The following command will build the app firmware inside a container. All output will be available to the host.
 ```
-./nanocli.sh umake      # Builds user app
-./nanocli.sh vmake      # Builds validator app
+make        # Builds both Cosmos and Tendermint apps
 ```
 
 **Upload the app to the device**
 The following command will upload the application to the ledger. _Warning: The application will be deleted before uploading._
 ```
-./nanocli.sh uload      # Loads user app
-./nanocli.sh vload      # Loads validator app
+make load_cosmos          # Loads Cosmos app       (for users)
+make load_tendermint      # Loads Tendermint app   (for validators)
 ```
 
 ## Continuous Integration (debugging CI issues)

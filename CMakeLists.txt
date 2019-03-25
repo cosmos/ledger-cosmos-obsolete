@@ -82,11 +82,11 @@ set(DISABLE_DOCKER_BUILDS OFF  CACHE BOOL "Disables Docker Builds")
 
 if (NOT DISABLE_DOCKER_BUILDS)
     add_custom_target(ledger_val_app
-            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/nanocli.sh vmake
+            COMMAND make build_tendermint
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
     add_custom_target(ledger_user_app
-            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/nanocli.sh umake
+            COMMAND make build_cosmos
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
             )
 
