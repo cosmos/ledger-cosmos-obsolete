@@ -57,7 +57,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         char key[screen_size] = "";
@@ -85,7 +85,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         char key[screen_size] = "";
@@ -113,7 +113,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         char key[screen_size] = "";
@@ -140,7 +140,7 @@ namespace {
                 R"({"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],"outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]})";
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         char key[screen_size] = "";
@@ -170,14 +170,10 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         setup_context(&parsed_json, screen_size, transaction);
-
-        char key[screen_size];
-        char value[screen_size];
-        int chunk_index = 0;
 
         EXPECT_EQ(9, transaction_get_display_pages()) << "Wrong number of pages";
     }
@@ -189,14 +185,10 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         setup_context(&parsed_json, screen_size, transaction);
-
-        char key[screen_size];
-        char value[screen_size];
-        int chunk_index = 0;
 
         EXPECT_EQ(21, transaction_get_display_pages()) << "Wrong number of pages";
     }
@@ -208,7 +200,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         setup_context(&parsed_json, screen_size, transaction);
@@ -237,7 +229,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         setup_context(&parsed_json, screen_size, transaction);
@@ -266,7 +258,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         setup_context(&parsed_json, screen_size, transaction);
@@ -295,7 +287,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         setup_context(&parsed_json, screen_size, transaction);
@@ -315,7 +307,7 @@ namespace {
 
 
         EXPECT_EQ_STR(key, "fee", "Wrong key");
-        EXPECT_EQ_STR(value, "{\"amount\":[{\"amount\":\"5\",\"denom\":\"photon\"}],\"gas\":\"10000\"}", "Wrong value");
+        EXPECT_EQ_STR(value, R"({"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"})", "Wrong value");
     }
 
     TEST(TransactionParserTest, ParseTransaction_Page_5) {
@@ -325,7 +317,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         setup_context(&parsed_json, screen_size, transaction);
@@ -353,7 +345,7 @@ namespace {
                 R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 100;
         setup_context(&parsed_json, screen_size, transaction);
@@ -383,7 +375,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 50;
         setup_context(&parsed_json, screen_size, transaction);
@@ -402,7 +394,7 @@ namespace {
                 &chunk_index);
 
         EXPECT_EQ_STR(key, "msgs_1/inputs/coins", "Wrong key");
-        EXPECT_EQ_STR(value, "[{\"amount\":\"10\",\"denom\":\"atom\"}]", "Wrong value");
+        EXPECT_EQ_STR(value, R"([{"amount":"10","denom":"atom"}])", "Wrong value");
     }
 
     TEST(TransactionParserTest, ParseTransaction_Page_8) {
@@ -412,7 +404,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 50;
         setup_context(&parsed_json, screen_size, transaction);
@@ -441,7 +433,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 50;
         setup_context(&parsed_json, screen_size, transaction);
@@ -460,7 +452,7 @@ namespace {
                 &chunk_index);
 
         EXPECT_EQ_STR(key, "msgs_1/outputs/coins", "Wrong key");
-        EXPECT_EQ_STR(value, "[{\"amount\":\"10\",\"denom\":\"atom\"}]", "Wrong value");
+        EXPECT_EQ_STR(value, R"([{"amount":"10","denom":"atom"}])", "Wrong value");
     }
 
     TEST(TransactionParserTest, ParseTransactionMultiMessage_Page_10) {
@@ -470,7 +462,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 50;
         setup_context(&parsed_json, screen_size, transaction);
@@ -501,7 +493,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 50;
         setup_context(&parsed_json, screen_size, transaction);
@@ -521,7 +513,7 @@ namespace {
                 &chunk_index);
 
         EXPECT_EQ_STR(key, "msgs_2/inputs/coins", "Wrong key");
-        EXPECT_EQ_STR(value, "[{\"amount\":\"20\",\"denom\":\"bitcoin\"}]", "Wrong value");
+        EXPECT_EQ_STR(value, R"([{"amount":"20","denom":"bitcoin"}])", "Wrong value");
     }
 
 
@@ -532,7 +524,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 50;
         setup_context(&parsed_json, screen_size, transaction);
@@ -563,7 +555,7 @@ namespace {
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 50;
         setup_context(&parsed_json, screen_size, transaction);
@@ -583,7 +575,7 @@ namespace {
                 &chunk_index);
 
         EXPECT_EQ_STR(key, "msgs_2/outputs/coins", "Wrong key");
-        EXPECT_EQ_STR(value, "[{\"amount\":\"50\",\"denom\":\"ripple\"}]", "Wrong value");
+        EXPECT_EQ_STR(value, R"([{"amount":"50","denom":"ripple"}])", "Wrong value");
     }
 
     TEST(TransactionParserTest, ParseTransaction_ValueFitsScreen) {
@@ -592,7 +584,7 @@ namespace {
                 R"({"chain_id":"test-chain-1","fee":"Four","msgs":[{"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],"outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]}],"sequence":1})";
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 5;
         setup_context(&parsed_json, screen_size, transaction);
@@ -618,7 +610,7 @@ namespace {
                 R"({"chain_id":"test-chain-1","fee":"Fourt","msgs":[{"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],"outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]}],"sequence":1})";
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 5;
         setup_context(&parsed_json, screen_size, transaction);
@@ -658,7 +650,7 @@ namespace {
                 R"({"chain_id":"test-chain-1","fee":{"amount":[{"amount":5,"denom":"photon"}],"gas":10000},"msgs":[{"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],"outputs":[{"address":"6F7574707574","coins":"LONGJUMPLIFELOVEDOVE"}]}],"sequence":1})";
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 5;
         setup_context(&parsed_json, screen_size, transaction);
@@ -735,7 +727,7 @@ namespace {
                 R"({"chain_id":"test-chain-1","fee":{"amount":[{"amount":5,"denom":"photon"}],"gas":10000},"msgs":[{"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],"outputs":[{"address":"6F7574707574","coins":"LONGJUMPLIFELOVEDOVE"}]}],"sequence":1})";
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         constexpr int screen_size = 5;
         setup_context(&parsed_json, screen_size, transaction);
@@ -777,10 +769,10 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
-        EXPECT_TRUE(error_msg == NULL) << "Validation failed, error: " << error_msg;
+        EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
     TEST(TransactionParserTest, TransactionJsonValidation_MissingAccountNumber) {
@@ -790,7 +782,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Missing account_number", "Validation should fail because account_number is missing");
@@ -803,7 +795,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Missing chain_id", "Validation should fail because chain_id is missing");
@@ -816,7 +808,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Missing fee", "Validation should fail because fee is missing");
@@ -829,7 +821,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Missing msgs", "Validation should fail because msgs is missing");
@@ -842,7 +834,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Missing sequence", "Validation should fail because sequence is missing");
@@ -855,7 +847,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Contains whitespace in the corpus",
@@ -869,7 +861,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Contains whitespace in the corpus",
@@ -883,7 +875,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Contains whitespace in the corpus",
@@ -897,7 +889,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Contains whitespace in the corpus",
@@ -911,10 +903,10 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
-        EXPECT_TRUE(error_msg == NULL) << "Validation failed, error: " << error_msg;
+        EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
     TEST(TransactionParserTest, TransactionJsonValidation_SortedDictionary) {
@@ -924,10 +916,10 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
-        EXPECT_TRUE(error_msg == NULL) << "Validation failed, error: " << error_msg;
+        EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
     TEST(TransactionParserTest, TransactionJsonValidation_NotSortedDictionary_FirstElement) {
@@ -937,7 +929,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Dictionaries are not sorted",
@@ -951,7 +943,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Dictionaries are not sorted",
@@ -965,7 +957,7 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
         EXPECT_EQ_STR(error_msg, "JSON Dictionaries are not sorted",
@@ -983,10 +975,10 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
-        EXPECT_TRUE(error_msg == NULL) << "Validation failed, error: " << error_msg;
+        EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
     TEST(TransactionParserTest, TransactionJsonValidation_GaiaCLIissue) {
@@ -995,10 +987,10 @@ namespace {
 
         parsed_json_t parsed_transaction;
         const char *err = json_parse(&parsed_transaction, transaction);
-        ASSERT_STREQ(NULL, err);
+        ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
-        EXPECT_TRUE(error_msg == NULL) << "Validation failed, error: " << error_msg;
+        EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
     TEST(TransactionParserTest, TransactionJsonValidation_GaiaCLIissueBigTX) {
