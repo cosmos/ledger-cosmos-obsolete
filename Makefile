@@ -65,7 +65,7 @@ delete_tendermint:
 	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
 	make -C $(LEDGER_TENDERMINT_SRC) delete
 
-build: clean_cosmos clean_tendermint
+clean: clean_cosmos clean_tendermint
 build: build_cosmos build_tendermint
 load: build load_cosmos load_tendermint
 delete: delete_cosmos delete_tendermint
