@@ -33,10 +33,10 @@ namespace {
             unsigned short screen_size,
             const char *transaction) {
         parsing_context_t context;
-        context.parsed_transaction = parsed_json;
+        context.parsed_tx = parsed_json;
         context.max_chars_per_key_line = screen_size;
         context.max_chars_per_value_line = screen_size;
-        context.transaction = transaction;
+        context.tx = transaction;
         set_parsing_context(context);
         set_copy_delegate([](void *d, const void *s, size_t size) { memcpy(d, s, size); });
     }
@@ -49,11 +49,33 @@ namespace {
         }
     }
 
+//    TEST(TransactionParserTest, DisplayArbitraryItem_StackOverflow) {
+//        auto tx = R"({"1":[[[[[[{"2":"4"}]]]]]]})";
+//
+//        parsed_json_t parsed_json;
+//        const char *err = json_parse(&parsed_json, tx);
+//        ASSERT_STREQ(nullptr, err);
+//
+//        constexpr int screen_size = 100;
+//        char key[screen_size] = "";
+//        char value[screen_size] = "";
+//        int16_t  chunk_index = 0;
+//        setup_context(&parsed_json, screen_size, tx);
+//
+//        display_arbitrary_item(0, // page index to display
+//                               key, sizeof(key),
+//                               value, sizeof(value),
+//                               0, // token index of the root element
+//                               &chunk_index);
+//
+//        EXPECT_EQ_STR(key, "1/2", "Wrong key returned");
+//        EXPECT_EQ_STR(value, R"(4)", "Wrong value returned");
+//    }
 
     TEST(TransactionParserTest, DisplayArbitraryItem_0) {
 
-        auto transaction =
-                R"({"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],"outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]})";
+        auto transaction = R"({"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],)" \
+                           R"("outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]})";
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
@@ -62,26 +84,22 @@ namespace {
         constexpr int screen_size = 100;
         char key[screen_size] = "";
         char value[screen_size] = "";
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         setup_context(&parsed_json, screen_size, transaction);
 
-        display_arbitrary_item(
-                0, // page index to display
-                key,
-                sizeof(key),
-                value,
-                sizeof(value),
-                0, // token index of the root element
-                &chunk_index);
+        display_arbitrary_item(0, // page index to display
+                               key, sizeof(key),
+                               value, sizeof(value),
+                               0, // token index of the root element
+                               &chunk_index);
 
         EXPECT_EQ_STR(key, "inputs/address", "Wrong key returned");
         EXPECT_EQ_STR(value, "696E707574", "Wrong value returned");
     }
 
     TEST(TransactionParserTest, DisplayArbitraryItem_1) {
-
-        auto transaction =
-                R"({"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],"outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]})";
+        auto transaction = R"({"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],)" \
+                           R"("outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]})";
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
@@ -90,17 +108,14 @@ namespace {
         constexpr int screen_size = 100;
         char key[screen_size] = "";
         char value[screen_size] = "";
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         setup_context(&parsed_json, screen_size, transaction);
 
-        display_arbitrary_item(
-                1, // page index
-                key,
-                sizeof(key),
-                value,
-                sizeof(value),
-                0, // token index of the root element
-                &chunk_index);
+        display_arbitrary_item(1, // page index
+                               key, sizeof(key),
+                               value, sizeof(value),
+                               0, // token index of the root element
+                               &chunk_index);
 
         EXPECT_EQ_STR(key, "inputs/coins", "Wrong key returned");
         EXPECT_EQ_STR(value, R"([{"amount":10,"denom":"atom"}])", "Wrong value returned");
@@ -108,8 +123,8 @@ namespace {
 
     TEST(TransactionParserTest, DisplayArbitraryItem_2) {
 
-        auto transaction =
-                R"({"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],"outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]})";
+        auto transaction = R"({"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],)" \
+                           R"("outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]})";
 
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
@@ -118,17 +133,14 @@ namespace {
         constexpr int screen_size = 100;
         char key[screen_size] = "";
         char value[screen_size] = "";
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         setup_context(&parsed_json, screen_size, transaction);
 
-        display_arbitrary_item(
-                2, // page index
-                key,
-                sizeof(key),
-                value,
-                sizeof(value),
-                0, // token index of the root element
-                &chunk_index);
+        display_arbitrary_item(2, // page index
+                               key, sizeof(key),
+                               value, sizeof(value),
+                               0, // token index of the root element
+                               &chunk_index);
 
         EXPECT_EQ_STR(key, "outputs/address", "Wrong key returned");
         EXPECT_EQ_STR(value, "6F7574707574", "Wrong value returned");
@@ -136,8 +148,9 @@ namespace {
 
     TEST(TransactionParserTest, DisplayArbitraryItem_3) {
 
-        auto transaction =
-                R"({"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],"outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]})";
+        auto transaction = R"({"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],)" \
+                           R"("outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]})";
+
         parsed_json_t parsed_json;
         const char *err = json_parse(&parsed_json, transaction);
         ASSERT_STREQ(nullptr, err);
@@ -146,21 +159,45 @@ namespace {
         char key[screen_size] = "";
         char value[screen_size] = "";
         int requested_item_index = 3;
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         setup_context(&parsed_json, screen_size, transaction);
 
-        int found_item_index = display_arbitrary_item(
-                requested_item_index, // page index
-                key,
-                sizeof(key),
-                value,
-                sizeof(value),
-                0, // token index of the root element
-                &chunk_index);
+        int found_item_index = display_arbitrary_item(requested_item_index, // page index
+                                                      key, sizeof(key),
+                                                      value, sizeof(value),
+                                                      0, // token index of the root element
+                                                      &chunk_index);
 
         EXPECT_EQ_STR(key, "outputs/coins", "Wrong key returned");
         EXPECT_EQ_STR(value, R"([{"amount":10,"denom":"atom"}])", "Wrong value returned");
         EXPECT_EQ(found_item_index, requested_item_index) << "Returned wrong index";
+    }
+
+    TEST(TransactionParserTest, Enumerate) {
+        auto transaction = R"({"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],)" \
+                           R"("outputs":[{"address":"6F7574707574","coins":[{"amount":10,"denom":"atom"}]}]})";
+
+        parsed_json_t parsed_json;
+        const char *err = json_parse(&parsed_json, transaction);
+        ASSERT_STREQ(nullptr, err);
+
+        constexpr int screen_size = 100;
+        char key[screen_size];
+        char value[screen_size];
+        setup_context(&parsed_json, screen_size, transaction);
+
+        int16_t chunk_index = 0;
+        int16_t num_pages = 5;
+
+        for (int16_t page_idx = 0; page_idx < num_pages; page_idx++) {
+            display_arbitrary_item(page_idx, // page index
+                                   key, sizeof(key),
+                                   value, sizeof(value),
+                                   0, // token index of the root element
+                                   &chunk_index);
+
+            std::cout << chunk_index << ": " << key << " : " << value << std::endl;
+        }
     }
 
     TEST(TransactionParserTest, Transaction_Page_Count) {
@@ -207,7 +244,7 @@ namespace {
 
         char key[screen_size];
         char value[screen_size];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
 
         // Get key/value strings for the 1st page
         transaction_get_display_key_value(
@@ -236,7 +273,7 @@ namespace {
 
         char key[screen_size];
         char value[screen_size];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
 
         // Get key/value strings for the 2nd page
         transaction_get_display_key_value(
@@ -265,7 +302,7 @@ namespace {
 
         char key[screen_size];
         char value[screen_size];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
 
         // Get key/value strings for the 3rd page
         transaction_get_display_key_value(
@@ -294,7 +331,7 @@ namespace {
 
         char key[screen_size];
         char value[screen_size];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
 
         // Get key/value strings for the 4th page
         transaction_get_display_key_value(
@@ -324,7 +361,7 @@ namespace {
 
         char key[screen_size];
         char value[screen_size];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
 
         // Get key/value strings for the 5th page
         transaction_get_display_key_value(
@@ -352,7 +389,7 @@ namespace {
 
         char key[screen_size];
         char value[screen_size];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
 
         // Get key/value strings for the 6th page, which
         // is the first page of recursive parsing of msg
@@ -382,7 +419,7 @@ namespace {
 
         char key[100];
         char value[100];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         // Get key/value strings for the 7th page, which
         // is the second page of recursive parsing of msg
         transaction_get_display_key_value(
@@ -411,7 +448,7 @@ namespace {
 
         char key[100];
         char value[100];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         // Get key/value strings for the 8th page, which
         // is the third page of recursive parsing of msg
         transaction_get_display_key_value(
@@ -440,7 +477,7 @@ namespace {
 
         char key[100];
         char value[100];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         // Get key/value strings for the 9th page, which
         // is the fourth page of recursive parsing of msg
         transaction_get_display_key_value(
@@ -469,7 +506,7 @@ namespace {
 
         char key[100];
         char value[100];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         // Get key/value strings for the 10th page, which
         // is the fifth page of recursive parsing of msgs
         // and 1st page of the second message
@@ -500,7 +537,7 @@ namespace {
 
         char key[100];
         char value[100];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         // Get key/value strings for the 10th page, which
         // is the fifth page of recursive parsing of msgs
         // and 1st page of the second message
@@ -531,7 +568,7 @@ namespace {
 
         char key[100];
         char value[100];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         // Get key/value strings for the 10th page, which
         // is the fifth page of recursive parsing of msgs
         // and 1st page of the second message
@@ -562,7 +599,7 @@ namespace {
 
         char key[100];
         char value[100];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         // Get key/value strings for the 10th page, which
         // is the fifth page of recursive parsing of msgs
         // and 1st page of the second message
@@ -591,7 +628,7 @@ namespace {
 
         char key[10];
         char value[screen_size];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         transaction_get_display_key_value(
                 key,
                 sizeof(key),
@@ -617,7 +654,7 @@ namespace {
 
         char key[10];
         char value[screen_size];
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         transaction_get_display_key_value(
                 key,
                 sizeof(key),
@@ -660,7 +697,7 @@ namespace {
 
         // String: LONGJUMPLIFELOVEDOVE
 
-        int chunk_index = 0;
+        int16_t chunk_index = 0;
         transaction_get_display_key_value(
                 key,
                 sizeof(key),
@@ -737,7 +774,7 @@ namespace {
 
         // String: LONGJUMPLIFELOVEDOVE
 
-        int chunk_index = -1;
+        int16_t chunk_index = -1;
         transaction_get_display_key_value(
                 key,
                 sizeof(key),
@@ -785,7 +822,8 @@ namespace {
         ASSERT_STREQ(nullptr, err);
 
         const char *error_msg = json_validate(&parsed_transaction, transaction);
-        EXPECT_EQ_STR(error_msg, "JSON Missing account_number", "Validation should fail because account_number is missing");
+        EXPECT_EQ_STR(error_msg, "JSON Missing account_number",
+                      "Validation should fail because account_number is missing");
     }
 
     TEST(TransactionParserTest, TransactionJsonValidation_MissingChainId) {
@@ -964,7 +1002,7 @@ namespace {
                       "Validation should fail because dictionaries are not sorted");
     }
 
-// This json has been taken directly from goclient which uses cosmos to serialize a simple transaction
+// This json has been taken directly from goclient which uses cosmos to serialize a simple tx
 // This test is currently failing the validation.
 // We are reviewing the validation code and cosmos serialization to find the culprit.
 
