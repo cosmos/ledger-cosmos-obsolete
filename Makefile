@@ -18,6 +18,7 @@
 
 LEDGER_COSMOS_SRC=$(CURDIR)/src/ledger-user
 LEDGER_TENDERMINT_SRC=$(CURDIR)/src/ledger-val
+
 DOCKER_IMAGE=zondax/ledger-docker-bolos
 DOCKER_BOLOS_SDK=/project/deps/nanos-secure-sdk
 
@@ -64,6 +65,10 @@ delete_cosmos:
 delete_tendermint:
 	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
 	make -C $(LEDGER_TENDERMINT_SRC) delete
+
+init:
+	@echo "Initializing device with test mnemonic! WARNING TAKES 2 MINUTES AND REQUIRES RECOVERY MODE"
+	@python -m ledgerblue.hostOnboard --apdu --id 0 --prefix "" --passphrase "" --pin 5555 --words "equip will roof matter pink blind book anxiety banner elbow sun young"
 
 clean: clean_cosmos clean_tendermint
 build: build_cosmos build_tendermint

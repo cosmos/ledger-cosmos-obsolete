@@ -21,6 +21,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 add_subdirectory(cmake/gtest)
 
+string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fsanitize=address -fno-omit-frame-pointer")
+string(APPEND CMAKE_LINKER_FLAGS_DEBUG " -fsanitize=address -fno-omit-frame-pointer")
+
+#string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fsanitize=undefined")
+#string(APPEND CMAKE_LINKER_FLAGS_DEBUG " -fsanitize=undefined")
+
 ##############################################################
 ##############################################################
 ####### User App
@@ -33,7 +39,9 @@ file(GLOB_RECURSE USER_JSMN_SRC
 
 file(GLOB_RECURSE USER_LIB_SRC
         src/ledger-user/src/lib/json_parser.c
-        src/ledger-user/src/lib/transaction_parser.c
+        src/ledger-user/src/lib/tx_parser.c
+        src/ledger-user/src/lib/tx_display.c
+        src/ledger-user/src/lib/tx_validate.c
         )
 file(GLOB_RECURSE TESTS_USER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/*.cpp)
 
@@ -55,9 +63,11 @@ add_test(gtest ${PROJECT_BINARY_DIR}/test_user)
 ###############################################################
 ###############################################################
 file(GLOB_RECURSE VAL_LIB_SRC
-        src/ledger-val/src/lib/vote_parser.c
-        src/ledger-val/src/lib/vote_fsm.c
         src/ledger-val/src/lib/vote.c
+        src/ledger-val/src/lib/vote_fsm.c
+        src/ledger-val/src/lib/vote_buffer.c
+        src/ledger-val/src/lib/vote_parser.c
+        src/ledger-val/deps/ledger-zxlib/src/buffering.c
         )
 file(GLOB_RECURSE TESTS_VAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/val/*.cpp)
 
