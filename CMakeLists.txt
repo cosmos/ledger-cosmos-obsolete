@@ -21,6 +21,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 add_subdirectory(cmake/gtest)
 
+string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fsanitize=address -fno-omit-frame-pointer")
+string(APPEND CMAKE_LINKER_FLAGS_DEBUG " -fsanitize=address -fno-omit-frame-pointer")
+
+#string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fsanitize=undefined")
+#string(APPEND CMAKE_LINKER_FLAGS_DEBUG " -fsanitize=undefined")
+
 ##############################################################
 ##############################################################
 ####### User App
