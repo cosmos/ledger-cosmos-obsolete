@@ -33,7 +33,9 @@ file(GLOB_RECURSE USER_JSMN_SRC
 
 file(GLOB_RECURSE USER_LIB_SRC
         src/ledger-user/src/lib/json_parser.c
-        src/ledger-user/src/lib/transaction_parser.c
+        src/ledger-user/src/lib/tx_parser.c
+        src/ledger-user/src/lib/tx_display.c
+        src/ledger-user/src/lib/tx_validate.c
         )
 file(GLOB_RECURSE TESTS_USER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/*.cpp)
 
@@ -55,9 +57,11 @@ add_test(gtest ${PROJECT_BINARY_DIR}/test_user)
 ###############################################################
 ###############################################################
 file(GLOB_RECURSE VAL_LIB_SRC
-        src/ledger-val/src/lib/vote_parser.c
-        src/ledger-val/src/lib/vote_fsm.c
         src/ledger-val/src/lib/vote.c
+        src/ledger-val/src/lib/vote_fsm.c
+        src/ledger-val/src/lib/vote_buffer.c
+        src/ledger-val/src/lib/vote_parser.c
+        src/ledger-val/deps/ledger-zxlib/src/buffering.c
         )
 file(GLOB_RECURSE TESTS_VAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/val/*.cpp)
 

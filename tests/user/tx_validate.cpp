@@ -23,74 +23,11 @@
 #include <array>
 #include <jsmn.h>
 #include <lib/json_parser.h>
-#include <lib/transaction_parser.h>
+#include <lib/tx_display.h>
 #include "common.h"
 
 namespace {
-// Test parsing real Cosmos transactions
-
-    TEST(TransactionParserTest, Transaction_Page_Count) {
-
-        auto transaction = R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
-
-        parsed_json_t parsed_json;
-        const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(nullptr, err);
-
-        constexpr int screen_size = 100;
-        setup_context(&parsed_json, screen_size, transaction);
-
-        EXPECT_EQ(9, transaction_get_display_pages()) << "Wrong number of pages";
-    }
-
-    TEST(TransactionParserTest, Transaction_Page_Count_MultipleMsgs) {
-
-        auto transaction =
-                R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
-
-        parsed_json_t parsed_json;
-        const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(nullptr, err);
-
-        constexpr int screen_size = 100;
-        setup_context(&parsed_json, screen_size, transaction);
-
-        EXPECT_EQ(21, transaction_get_display_pages()) << "Wrong number of pages";
-    }
-
-    TEST(TransactionParserTest, ParseTransaction_OutOfBounds) {
-
-        auto transaction =
-                R"({"chain_id":"test-chain-1","fee":{"amount":[{"amount":5,"denom":"photon"}],"gas":10000},"msgs":[{"inputs":[{"address":"696E707574","coins":[{"amount":10,"denom":"atom"}]}],"outputs":[{"address":"6F7574707574","coins":"LONGJUMPLIFELOVEDOVE"}]}],"sequence":1})";
-        parsed_json_t parsed_json;
-        const char *err = json_parse(&parsed_json, transaction);
-        ASSERT_STREQ(nullptr, err);
-
-        constexpr int screen_size = 5;
-        setup_context(&parsed_json, screen_size, transaction);
-
-        char key[32];
-        char value[screen_size];
-
-        // String: LONGJUMPLIFELOVEDOVE
-
-        int16_t num_chunk = transaction_get_display_key_value(key, sizeof(key),
-                                                              value, sizeof(value),
-                                                              8, -1);
-
-        EXPECT_EQ(num_chunk, 5) << "Wrong number of chunks";
-        EXPECT_EQ_STR(value, "", "Wrong value");
-
-        num_chunk = transaction_get_display_key_value(key, sizeof(key),
-                                                      value, sizeof(value),
-                                                      8,
-                                                      10);
-
-        EXPECT_EQ(num_chunk, 5) << "Wrong number of chunks";
-        EXPECT_EQ_STR(value, "", "Wrong value");
-    }
-
-    TEST(TransactionParserTest, TransactionJsonValidation_CorrectFormat) {
+    TEST(TxValidationTest, CorrectFormat) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -103,7 +40,7 @@ namespace {
         EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_MissingAccountNumber) {
+    TEST(TxValidationTest, MissingAccountNumber) {
 
         auto transaction =
                 R"({"chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -117,7 +54,7 @@ namespace {
                       "Validation should fail because account_number is missing");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_MissingChainId) {
+    TEST(TxValidationTest, MissingChainId) {
 
         auto transaction =
                 R"({"account_number":"0","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -130,7 +67,7 @@ namespace {
         EXPECT_EQ_STR(error_msg, "JSON Missing chain_id", "Validation should fail because chain_id is missing");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_MissingFee) {
+    TEST(TxValidationTest, MissingFee) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"test-chain-1","fees":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -143,7 +80,7 @@ namespace {
         EXPECT_EQ_STR(error_msg, "JSON Missing fee", "Validation should fail because fee is missing");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_MissingMsgs) {
+    TEST(TxValidationTest, MissingMsgs) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgsble":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -156,7 +93,7 @@ namespace {
         EXPECT_EQ_STR(error_msg, "JSON Missing msgs", "Validation should fail because msgs is missing");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_MissingSequence) {
+    TEST(TxValidationTest, MissingSequence) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}]})";
@@ -169,7 +106,7 @@ namespace {
         EXPECT_EQ_STR(error_msg, "JSON Missing sequence", "Validation should fail because sequence is missing");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_Spaces_InTheMiddle) {
+    TEST(TxValidationTest, Spaces_InTheMiddle) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"test-chain-1", "fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -183,7 +120,7 @@ namespace {
                       "Validation should fail because contains whitespace in the corpus");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_Spaces_AtTheFront) {
+    TEST(TxValidationTest, Spaces_AtTheFront) {
 
         auto transaction =
                 R"({  "account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -197,7 +134,7 @@ namespace {
                       "Validation should fail because contains whitespace in the corpus");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_Spaces_AtTheEnd) {
+    TEST(TxValidationTest, Spaces_AtTheEnd) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"  })";
@@ -211,7 +148,7 @@ namespace {
                       "Validation should fail because contains whitespace in the corpus");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_Spaces_Lots) {
+    TEST(TxValidationTest, Spaces_Lots) {
 
         auto transaction =
                 R"({"account_number":"0",   "chain_id":"test-chain-1",    "fee":{"amount":    [{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -225,7 +162,7 @@ namespace {
                       "Validation should fail because contains whitespace in the corpus");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_AllowSpacesInString) {
+    TEST(TxValidationTest, AllowSpacesInString) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"    test-chain-1    ","fee":{"amount":[{"amount":"5","denom":"    photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -238,7 +175,7 @@ namespace {
         EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_SortedDictionary) {
+    TEST(TxValidationTest, SortedDictionary) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -251,7 +188,7 @@ namespace {
         EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_NotSortedDictionary_FirstElement) {
+    TEST(TxValidationTest, NotSortedDictionary_FirstElement) {
 
         auto transaction =
                 R"({"chain_id":"test-chain-1","account_number":"0","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -265,7 +202,7 @@ namespace {
                       "Validation should fail because dictionaries are not sorted");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_NotSortedDictionary_MiddleElement) {
+    TEST(TxValidationTest, NotSortedDictionary_MiddleElement) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"test-chain-1","memo":"testmemo","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -279,7 +216,7 @@ namespace {
                       "Validation should fail because dictionaries are not sorted");
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_NotSortedDictionary_LastElement) {
+    TEST(TxValidationTest, NotSortedDictionary_LastElement) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","sequence":"1","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}]})";
@@ -297,7 +234,7 @@ namespace {
 // This test is currently failing the validation.
 // We are reviewing the validation code and cosmos serialization to find the culprit.
 
-    TEST(TransactionParserTest, TransactionJsonValidation_CosmosExample) {
+    TEST(TxValidationTest, CosmosExample) {
 
         auto transaction =
                 R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
@@ -310,7 +247,7 @@ namespace {
         EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_GaiaCLIissue) {
+    TEST(TxValidationTest, GaiaCLIissue) {
 
         auto transaction = R"({"account_number":"811","chain_id":"cosmoshub-1","fee":{"amount":[],"gas":"5000000"},"memo":"","msgs":[{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj","value":{"amount":"8000000000","denom":"uatom"}}}],"sequence":"1"})";
 
@@ -322,7 +259,7 @@ namespace {
         EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
-    TEST(TransactionParserTest, TransactionJsonValidation_GaiaCLIissueBigTX) {
+    TEST(TxValidationTest, GaiaCLIissueBigTX) {
 
         auto transaction = R"({"account_number":"811","chain_id":"cosmoshub-1","fee":{"amount":[],"gas":"5000000"},"memo":"","msgs":[{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj","value":{"amount":"8000000000","denom":"uatom"}}}],"sequence":"1"})";
 

@@ -23,10 +23,51 @@
 #include <array>
 #include <jsmn.h>
 #include <lib/json_parser.h>
-#include <lib/transaction_parser.h>
+#include <lib/tx_parser.h>
+#include <lib/tx_display.h>
 #include "common.h"
 
 namespace {
+    TEST(ParserIterator, MinimalTx_RawPages) {
+        auto transaction = R"({"account_number":"V1","chain_id":"V2","fee":{"amount":[{"a":"b"}, {"c":"d"}, {"x":"y"}],"gas":"V3"},"memo":"V4","msgs":[],"sequence":"V5"})";
+
+        auto expected_data = R"(
+[0] 1/1 | account_number : V1
+[1] 1/1 | chain_id : V2
+[2] 1/1 | fee/amount : [{"a":"b"}, {"c":"d"}, {"x":"y"}]
+[3] 1/1 | fee/gas : V3
+[4] 1/1 | memo : V4
+[5] 1/1 | sequence : V5
+-----------)";
+        auto pages = get_pages(transaction, 100);
+        std::cout << pages << std::endl;
+        ASSERT_EQ(expected_data, pages);
+    }
+
+    TEST(ParserIterator, MinimalTx_DisplayPages) {
+        auto transaction = R"({"account_number":"V1","chain_id":"V2","fee":{"amount":[{"a":"b"}, {"c":"d"}, {"x":"y"}],"gas":"V3"},"memo":"V4","msgs":[{"m1":"z1"}, {"m2":"z2"}, {"m3":"z3"}],"sequence":"V5"})";
+        auto expected_display = R"(
+[0]1
+[1]1
+[2]1
+[3]2
+[4]1
+[5]3
+[0] 1/1 | chain_id : V2
+[1] 1/1 | account_number : V1
+[2] 1/1 | sequence : V5
+[3] 1/1 | fee/amount : [{"a":"b"}, {"c":"d"}, {"x":"y"}]
+[4] 1/1 | fee/gas : V3
+[5] 1/1 | memo : V4
+[6] 1/1 | msgs/m1 : z1
+[7] 1/1 | msgs/m2 : z2
+[8] 1/1 | msgs/m3 : z3
+----------- 9)";
+        auto display_pages = get_display_pages(transaction, 100);
+        std::cout << display_pages << std::endl;
+        ASSERT_EQ(expected_display, display_pages);
+    }
+
     TEST(ParserIterator, EnumerateBasic1) {
         auto transaction = R"({"A":"1","B":"2","C":"3"})";
 
@@ -37,12 +78,20 @@ namespace {
 -----------)";
 
         auto expected_display = R"(
------------)";
+[0]0
+[1]0
+[2]0
+[3]0
+[4]0
+[5]0
+----------- 0)";
 
         auto pages = get_pages(transaction, 100);
         auto display_pages = get_display_pages(transaction, 100);
+
         std::cout << pages << std::endl;
         std::cout << display_pages << std::endl;
+
         ASSERT_EQ(expected_data, pages);
         ASSERT_EQ(expected_display, display_pages);
     }
@@ -59,12 +108,20 @@ namespace {
 -----------)";
 
         auto expected_display = R"(
------------)";
+[0]0
+[1]0
+[2]0
+[3]0
+[4]0
+[5]0
+----------- 0)";
 
         auto pages = get_pages(transaction, 100);
         auto display_pages = get_display_pages(transaction, 100);
+
         std::cout << pages << std::endl;
         std::cout << display_pages << std::endl;
+
         ASSERT_EQ(expected_data, pages);
         ASSERT_EQ(expected_display, display_pages);
     }
@@ -84,21 +141,30 @@ namespace {
 -----------)";
 
         auto expected_display = R"(
+[0]1
+[1]1
+[2]1
+[3]2
+[4]1
+[5]4
 [0] 1/1 | chain_id : test-chain-1
 [1] 1/1 | account_number : 0
 [2] 1/1 | sequence : 1
-[3] 1/1 | fee : {"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"}
-[4] 1/1 | memo : testmemo
-[5] 1/1 | msgs_1/inputs/address : cosmosaccaddr1d9h8qat5e4ehc5
-[6] 1/1 | msgs_1/inputs/coins : [{"amount":"10","denom":"atom"}]
-[7] 1/1 | msgs_1/outputs/address : cosmosaccaddr1da6hgur4wse3jx32
-[8] 1/1 | msgs_1/outputs/coins : [{"amount":"10","denom":"atom"}]
------------)";
+[3] 1/1 | fee/amount : [{"amount":"5","denom":"photon"}]
+[4] 1/1 | fee/gas : 10000
+[5] 1/1 | memo : testmemo
+[6] 1/1 | msgs/inputs/address : cosmosaccaddr1d9h8qat5e4ehc5
+[7] 1/1 | msgs/inputs/coins : [{"amount":"10","denom":"atom"}]
+[8] 1/1 | msgs/outputs/address : cosmosaccaddr1da6hgur4wse3jx32
+[9] 1/1 | msgs/outputs/coins : [{"amount":"10","denom":"atom"}]
+----------- 10)";
 
         auto pages = get_pages(transaction, 100);
         auto display_pages = get_display_pages(transaction, 100);
+
         std::cout << pages << std::endl;
         std::cout << display_pages << std::endl;
+
         ASSERT_EQ(expected_data, pages);
         ASSERT_EQ(expected_display, display_pages);
     }
@@ -117,34 +183,91 @@ namespace {
 [5] 2/2 | msgs/inputs : ":[{"amount":"10","denom":"atom"}]}]
 [6] 1/2 | msgs/outputs : [{"address":"cosmosaccaddr1da6hgur4wse3jx32","coi
 [6] 2/2 | msgs/outputs : ns":[{"amount":"10","denom":"atom"}]}]
-[7] 1/2 | msgs/outputs/inputs : [{"address":"test2","coins":[{"amount":"20","deno
-[7] 2/2 | msgs/outputs/inputs : m":"bitcoin"}]}]
-[8] 1/2 | msgs/outputs/outputs : [{"address":"test3","coins":[{"amount":"50","deno
-[8] 2/2 | msgs/outputs/outputs : m":"ripple"}]}]
+[7] 1/2 | msgs/inputs : [{"address":"test2","coins":[{"amount":"20","deno
+[7] 2/2 | msgs/inputs : m":"bitcoin"}]}]
+[8] 1/2 | msgs/outputs : [{"address":"test3","coins":[{"amount":"50","deno
+[8] 2/2 | msgs/outputs : m":"ripple"}]}]
 [9] 1/1 | sequence : 1
 -----------)";
 
         auto expected_display = R"(
+[0]1
+[1]1
+[2]1
+[3]2
+[4]1
+[5]8
 [0] 1/1 | chain_id : test-chain-1
 [1] 1/1 | account_number : 0
 [2] 1/1 | sequence : 1
-[3] 1/2 | fee : {"amount":[{"amount":"5","denom":"photon"}],"gas"
-[3] 2/2 | fee : :"10000"}
-[4] 1/1 | memo : testmemo
-[5] 1/1 | msgs_1/inputs/address : cosmosaccaddr1d9h8qat5e4ehc5
-[6] 1/1 | msgs_1/inputs/coins : [{"amount":"10","denom":"atom"}]
-[7] 1/1 | msgs_1/outputs/address : cosmosaccaddr1da6hgur4wse3jx32
-[8] 1/1 | msgs_1/outputs/coins : [{"amount":"10","denom":"atom"}]
-[9] 1/1 | msgs_2/inputs/address : test2
-[10] 1/1 | msgs_2/inputs/coins : [{"amount":"20","denom":"bitcoin"}]
-[11] 1/1 | msgs_2/outputs/address : test3
-[12] 1/1 | msgs_2/outputs/coins : [{"amount":"50","denom":"ripple"}]
------------)";
+[3] 1/1 | fee/amount : [{"amount":"5","denom":"photon"}]
+[4] 1/1 | fee/gas : 10000
+[5] 1/1 | memo : testmemo
+[6] 1/1 | msgs/inputs/address : cosmosaccaddr1d9h8qat5e4ehc5
+[7] 1/1 | msgs/inputs/coins : [{"amount":"10","denom":"atom"}]
+[8] 1/1 | msgs/outputs/address : cosmosaccaddr1da6hgur4wse3jx32
+[9] 1/1 | msgs/outputs/coins : [{"amount":"10","denom":"atom"}]
+[10] 1/1 | msgs/inputs/address : test2
+[11] 1/1 | msgs/inputs/coins : [{"amount":"20","denom":"bitcoin"}]
+[12] 1/1 | msgs/outputs/address : test3
+[13] 1/1 | msgs/outputs/coins : [{"amount":"50","denom":"ripple"}]
+----------- 14)";
 
         auto pages = get_pages(transaction, 50);
         auto display_pages = get_display_pages(transaction, 50);
+
         std::cout << pages << std::endl;
         std::cout << display_pages << std::endl;
+
+        ASSERT_EQ(expected_data, pages);
+        ASSERT_EQ(expected_display, display_pages);
+    }
+
+    TEST(ParserIterator, Enumerate3) {
+        auto transaction =
+                R"({"account_number":"2","chain_id":"local-testnet","fee":{"amount":[],"gas":"500000"},"memo":"abc","msgs":[{"description":"test","initial_deposit":[{"amount":"1","denom":"stake"}],"proposal_type":"Text","proposer":"cosmos101234567890abcdefghijklmnopqrstuvwxyz0","title":"test"}],"sequence":"0"})";
+
+        auto expected_data = R"(
+[0] 1/1 | account_number : 2
+[1] 1/1 | chain_id : local-testnet
+[2] 1/1 | fee/amount : []
+[3] 1/1 | fee/gas : 500000
+[4] 1/1 | memo : abc
+[5] 1/1 | msgs/description : test
+[6] 1/1 | msgs/initial_deposit : [{"amount":"1","denom":"stake"}]
+[7] 1/1 | msgs/proposal_type : Text
+[8] 1/1 | msgs/proposer : cosmos101234567890abcdefghijklmnopqrstuvwxyz0
+[9] 1/1 | msgs/title : test
+[10] 1/1 | sequence : 0
+-----------)";
+
+        auto expected_display = R"(
+[0]1
+[1]1
+[2]1
+[3]2
+[4]1
+[5]6
+[0] 1/1 | chain_id : local-testnet
+[1] 1/1 | account_number : 2
+[2] 1/1 | sequence : 0
+[3] 1/1 | fee/amount : []
+[4] 1/1 | fee/gas : 500000
+[5] 1/1 | memo : abc
+[6] 1/1 | msgs/description : test
+[7] 1/1 | msgs/initial_deposit/amount : 1
+[8] 1/1 | msgs/initial_deposit/denom : stake
+[9] 1/1 | msgs/proposal_type : Text
+[10] 1/1 | msgs/proposer : cosmos101234567890abcdefghijklmnopqrstuvwxyz0
+[11] 1/1 | msgs/title : test
+----------- 12)";
+
+        auto pages = get_pages(transaction, 50);
+        auto display_pages = get_display_pages(transaction, 50);
+
+        std::cout << pages << std::endl;
+        std::cout << display_pages << std::endl;
+
         ASSERT_EQ(expected_data, pages);
         ASSERT_EQ(expected_display, display_pages);
     }
@@ -160,15 +283,23 @@ namespace {
 -----------)";
 
         auto expected_display = R"(
-[0] 1/3 | chain_id : 1234
-[0] 2/3 | chain_id : 5678
-[0] 3/3 | chain_id : 90AB
------------)";
+[0]1
+[1]0
+[2]0
+[3]0
+[4]0
+[5]0
+[0] 1/3 | chai : 1234
+[0] 2/3 | chai : 5678
+[0] 3/3 | chai : 90AB
+----------- 1)";
 
         auto pages = get_pages(transaction, 5);
         auto display_pages = get_display_pages(transaction, 5);
+
         std::cout << pages << std::endl;
         std::cout << display_pages << std::endl;
+
         ASSERT_EQ(expected_data, pages);
         ASSERT_EQ(expected_display, display_pages);
     }
@@ -186,16 +317,24 @@ namespace {
 -----------)";
 
         auto expected_display = R"(
-[0] 1/4 | chain_id : 1234
-[0] 2/4 | chain_id : 5678
-[0] 3/4 | chain_id : 90AB
-[0] 4/4 | chain_id : C
------------)";
+[0]1
+[1]0
+[2]0
+[3]0
+[4]0
+[5]0
+[0] 1/4 | chai : 1234
+[0] 2/4 | chai : 5678
+[0] 3/4 | chai : 90AB
+[0] 4/4 | chai : C
+----------- 1)";
 
         auto pages = get_pages(transaction, 5);
         auto display_pages = get_display_pages(transaction, 5);
+
         std::cout << pages << std::endl;
         std::cout << display_pages << std::endl;
+
         ASSERT_EQ(expected_data, pages);
         ASSERT_EQ(expected_display, display_pages);
     }
@@ -255,15 +394,23 @@ namespace {
 -----------)";
 
         auto expected_display = R"(
-[0] 1/3 | chain_id : test
-[0] 2/3 | chain_id : -cha
-[0] 3/3 | chain_id : in-1
------------)";
+[0]1
+[1]0
+[2]0
+[3]0
+[4]0
+[5]0
+[0] 1/3 | chai : test
+[0] 2/3 | chai : -cha
+[0] 3/3 | chai : in-1
+----------- 1)";
 
         auto pages = get_pages(transaction, 5);
         auto display_pages = get_display_pages(transaction, 5);
+
         std::cout << pages << std::endl;
         std::cout << display_pages << std::endl;
+
         ASSERT_EQ(expected_data, pages);
         ASSERT_EQ(expected_display, display_pages);
     }
@@ -272,18 +419,25 @@ namespace {
         auto transaction = R"({"1":[[[[[[[[[[[[{"2":"4"}]]]]]]]]]]]]})";
 
         auto expected_data = R"(
-[0] 1/1 | 1 : [[[[[[[[[[{"2":"4"}]]]]]]]]]]
+[0] 1/1 | 1 : [[[[[[[{"2":"4"}]]]]]]]
 -----------)";
 
         auto expected_display = R"(
------------)";
+[0]0
+[1]0
+[2]0
+[3]0
+[4]0
+[5]0
+----------- 0)";
 
         auto pages = get_pages(transaction, 100);
         auto display_pages = get_display_pages(transaction, 100);
+
         std::cout << pages << std::endl;
         std::cout << display_pages << std::endl;
+
         ASSERT_EQ(expected_data, pages);
         ASSERT_EQ(expected_display, display_pages);
     }
-
 }

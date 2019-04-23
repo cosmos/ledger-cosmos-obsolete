@@ -25,78 +25,60 @@
 #include "lib/vote_fsm.h"
 
 namespace {
-    void vote_reset(vote_t *v)
-    {
-        memset(v, 0, sizeof(vote_t));
-    }
-
-    void vote_state_reset(vote_state_t *s)
-    {
-        memset(s, 0, sizeof(vote_state_t));
-    }
-
     TEST(VoteParserTest, NotInitialized) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        EXPECT_EQ(0, s->isInitialized);
+        EXPECT_EQ(0, vote_state.isInitialized);
         EXPECT_EQ(0, try_state_transition());
     }
 
 ////////////
 
     TEST(VoteParserTest, SameHeightRound_SameType) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        s->isInitialized = 1;
-        s->vote.Type = TYPE_PROPOSAL;
-        s->vote.Height = 0;
-        s->vote.Round = 0;
+        vote_state.isInitialized = 1;
+        vote_state.vote.Type = TYPE_PROPOSAL;
+        vote_state.vote.Height = 0;
+        vote_state.vote.Round = 0;
 
-        v->Type = TYPE_PROPOSAL;
-        v->Height = 0;
-        v->Round = 0;
+        vote.Type = TYPE_PROPOSAL;
+        vote.Height = 0;
+        vote.Round = 0;
 
         EXPECT_EQ(0, try_state_transition());
     }
 
     TEST(VoteParserTest, SameHeightRound_NextType) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        s->isInitialized = 1;
-        s->vote.Type = TYPE_PROPOSAL;
-        s->vote.Height = 0;
-        s->vote.Round = 0;
+        vote_state.isInitialized = 1;
+        vote_state.vote.Type = TYPE_PROPOSAL;
+        vote_state.vote.Height = 0;
+        vote_state.vote.Round = 0;
 
-        v->Type = TYPE_PREVOTE;
-        v->Height = 0;
-        v->Round = 0;
+        vote.Type = TYPE_PREVOTE;
+        vote.Height = 0;
+        vote.Round = 0;
 
         EXPECT_EQ(1, try_state_transition());
     }
 
     TEST(VoteParserTest, SameHeightRound_NextType2) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        s->isInitialized = 1;
-        s->vote.Type = TYPE_PROPOSAL;
-        s->vote.Height = 0;
-        s->vote.Round = 0;
+        vote_state.isInitialized = 1;
+        vote_state.vote.Type = TYPE_PROPOSAL;
+        vote_state.vote.Height = 0;
+        vote_state.vote.Round = 0;
 
-        v->Type = TYPE_PRECOMMIT;
-        v->Height = 0;
-        v->Round = 0;
+        vote.Type = TYPE_PRECOMMIT;
+        vote.Height = 0;
+        vote.Round = 0;
 
         EXPECT_EQ(1, try_state_transition());
     }
@@ -104,55 +86,49 @@ namespace {
 ///////////
 
     TEST(VoteParserTest, NextRound_SameType) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        s->isInitialized = 1;
-        s->vote.Type = TYPE_PROPOSAL;
-        s->vote.Height = 0;
-        s->vote.Round = 0;
+        vote_state.isInitialized = 1;
+        vote_state.vote.Type = TYPE_PROPOSAL;
+        vote_state.vote.Height = 0;
+        vote_state.vote.Round = 0;
 
-        v->Type = TYPE_PROPOSAL;
-        v->Height = 0;
-        v->Round = 1;
+        vote.Type = TYPE_PROPOSAL;
+        vote.Height = 0;
+        vote.Round = 1;
 
         EXPECT_EQ(1, try_state_transition());
     }
 
     TEST(VoteParserTest, NextRound_NextType) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        s->isInitialized = 1;
-        s->vote.Type = TYPE_PROPOSAL;
-        s->vote.Height = 0;
-        s->vote.Round = 0;
+        vote_state.isInitialized = 1;
+        vote_state.vote.Type = TYPE_PROPOSAL;
+        vote_state.vote.Height = 0;
+        vote_state.vote.Round = 0;
 
-        v->Type = TYPE_PREVOTE;
-        v->Height = 0;
-        v->Round = 1;
+        vote.Type = TYPE_PREVOTE;
+        vote.Height = 0;
+        vote.Round = 1;
 
         EXPECT_EQ(1, try_state_transition());
     }
 
     TEST(VoteParserTest, NextRound_NextType2) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        s->isInitialized = 1;
-        s->vote.Type = TYPE_PROPOSAL;
-        s->vote.Height = 0;
-        s->vote.Round = 0;
+        vote_state.isInitialized = 1;
+        vote_state.vote.Type = TYPE_PROPOSAL;
+        vote_state.vote.Height = 0;
+        vote_state.vote.Round = 0;
 
-        v->Type = TYPE_PRECOMMIT;
-        v->Height = 0;
-        v->Round = 1;
+        vote.Type = TYPE_PRECOMMIT;
+        vote.Height = 0;
+        vote.Round = 1;
 
         EXPECT_EQ(1, try_state_transition());
     }
@@ -160,73 +136,65 @@ namespace {
 ///////////
 
     TEST(VoteParserTest, NextHeight_SameType) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        s->isInitialized = 1;
-        s->vote.Type = TYPE_PROPOSAL;
-        s->vote.Height = 0;
-        s->vote.Round = 0;
+        vote_state.isInitialized = 1;
+        vote_state.vote.Type = TYPE_PROPOSAL;
+        vote_state.vote.Height = 0;
+        vote_state.vote.Round = 0;
 
-        v->Type = TYPE_PROPOSAL;
-        v->Height = 1;
-        v->Round = 0;
+        vote.Type = TYPE_PROPOSAL;
+        vote.Height = 1;
+        vote.Round = 0;
 
         EXPECT_EQ(1, try_state_transition());
     }
 
     TEST(VoteParserTest, NextHeight_NextType) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        s->isInitialized = 1;
-        s->vote.Type = TYPE_PROPOSAL;
-        s->vote.Height = 0;
-        s->vote.Round = 0;
+        vote_state.isInitialized = 1;
+        vote_state.vote.Type = TYPE_PROPOSAL;
+        vote_state.vote.Height = 0;
+        vote_state.vote.Round = 0;
 
-        v->Type = TYPE_PREVOTE;
-        v->Height = 1;
-        v->Round = 0;
+        vote.Type = TYPE_PREVOTE;
+        vote.Height = 1;
+        vote.Round = 0;
 
         EXPECT_EQ(1, try_state_transition());
     }
 
     TEST(VoteParserTest, NextHeight_NextType2) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        s->isInitialized = 1;
-        s->vote.Type = TYPE_PROPOSAL;
-        s->vote.Height = 0;
-        s->vote.Round = 0;
+        vote_state.isInitialized = 1;
+        vote_state.vote.Type = TYPE_PROPOSAL;
+        vote_state.vote.Height = 0;
+        vote_state.vote.Round = 0;
 
-        v->Type = TYPE_PRECOMMIT;
-        v->Height = 1;
-        v->Round = 0;
+        vote.Type = TYPE_PRECOMMIT;
+        vote.Height = 1;
+        vote.Round = 0;
 
         EXPECT_EQ(1, try_state_transition());
     }
 
     TEST(VoteParserTest, DeviceTest1) {
-        vote_t *v = vote_get();
-        vote_state_t *s = vote_state_get();
-        vote_reset(v);
-        vote_state_reset(s);
+        vote_reset();
+        vote_state_reset();
 
-        s->isInitialized = 1;
-        s->vote.Type = TYPE_PREVOTE;
-        s->vote.Height = 9;
-        s->vote.Round = 0;
+        vote_state.isInitialized = 1;
+        vote_state.vote.Type = TYPE_PREVOTE;
+        vote_state.vote.Height = 9;
+        vote_state.vote.Round = 0;
 
-        v->Type = TYPE_PREVOTE;
-        v->Height = 1;
-        v->Round = 0;
+        vote.Type = TYPE_PREVOTE;
+        vote.Height = 1;
+        vote.Round = 0;
 
         EXPECT_EQ(0, try_state_transition());
     }
