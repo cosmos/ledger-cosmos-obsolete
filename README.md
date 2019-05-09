@@ -49,7 +49,7 @@ The validator app is available in [Ledger Live](https://www.ledger.com/pages/led
 
 To install, please follow the build instructions in the following section.
 
-- Now go back to manager and search for Cosmos:
+- Now go back to manager and search for Tendermint:
 
 ![](docs/img/tendermint_app.png)
 
