@@ -22,6 +22,11 @@ LEDGER_TENDERMINT_SRC=$(CURDIR)/src/ledger-val
 DOCKER_IMAGE=zondax/ledger-docker-bolos
 DOCKER_BOLOS_SDK=/project/deps/nanos-secure-sdk
 
+DOCKER_IMAGE=zondax/ledger-docker-bolos
+DOCKER_BOLOS_SDK=/project/deps/nanos-secure-sdk
+DOCKER_IMAGE2=zondax/ledger_bolos2
+DOCKER_BOLOS_SDK2=/project/deps/nano2-sdk
+
 all: build
 
 deps:
@@ -35,11 +40,25 @@ build_cosmos:
 	$(DOCKER_IMAGE) \
 	make -C /project/src/ledger-user
 
+build_cosmos2:
+	docker run -i --rm \
+	-e BOLOS_SDK=$(DOCKER_BOLOS_SDK2) -e BOLOS_ENV=/opt/bolos \
+	-u $(shell id -u) -v $(shell pwd):/project \
+	$(DOCKER_IMAGE2) \
+	make -C /project/src/ledger-user
+
 build_tendermint:
 	docker run -i --rm \
 	-e BOLOS_SDK=$(DOCKER_BOLOS_SDK) -e BOLOS_ENV=/opt/bolos \
 	-u $(shell id -u) -v $(shell pwd):/project \
 	$(DOCKER_IMAGE) \
+	make -C /project/src/ledger-val
+
+build_tendermint2:
+	docker run -i --rm \
+	-e BOLOS_SDK=$(DOCKER_BOLOS_SDK) -e BOLOS_ENV=/opt/bolos \
+	-u $(shell id -u) -v $(shell pwd):/project \
+	$(DOCKER_IMAGE2) \
 	make -C /project/src/ledger-val
 
 clean_cosmos:
@@ -54,8 +73,16 @@ load_cosmos: build_cosmos
 	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
 	make -C $(LEDGER_COSMOS_SRC) load
 
+load_cosmos2: build_cosmos2
+	BOLOS_SDK=$(CURDIR)/deps/nano2-sdk BOLOS_ENV=/opt/bolos \
+	make -C $(LEDGER_COSMOS_SRC) load
+
 load_tendermint: build_tendermint
 	BOLOS_SDK=$(CURDIR)/deps/nanos-secure-sdk BOLOS_ENV=/opt/bolos \
+	make -C $(LEDGER_TENDERMINT_SRC) load
+
+load_tendermint2: build_tendermint2
+	BOLOS_SDK=$(CURDIR)/deps/nano2-sdk BOLOS_ENV=/opt/bolos \
 	make -C $(LEDGER_TENDERMINT_SRC) load
 
 delete_cosmos:
