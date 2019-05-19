@@ -440,4 +440,79 @@ namespace {
         ASSERT_EQ(expected_data, pages);
         ASSERT_EQ(expected_display, display_pages);
     }
+
+    TEST(ParserIterator, BigTX) {
+        auto transaction = R"({"account_number":"108","chain_id":"cosmoshub-2","fee":{"amount":[{"amount":"600","denom":"uatom"}],"gas":"200000"},"memo":"","msgs":[{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1qwl879nx9t6kef4supyazayf7vjhennyh568ys"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1x88j7vp2xnw3zec8ur3g4waxycyz7m0mahdv3p"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1ttfytaf43nkytzp8hkfjfgjc693ky4t3y2n2ku"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1wdrypwex63geqswmcy5qynv4w3z3dyef2qmyna"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper102ruvpv2srmunfffxavttxnhezln6fnc54at8c"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1sxx9mszve0gaedz5ld7qdkjkfv8z992ax69k08"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1ssm0d433seakyak8kcf93yefhknjleeds4y3em"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper13sduv92y3xdhy3rpmhakrc3v7t37e7ps9l0kpv"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper15urq2dtp9qce4fyc85m6upwm9xul3049e02707"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper14lultfckehtszvzw4ehu0apvsr77afvyju5zzy"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1k9a0cs97vul8w2vwknlfmpez6prv8klv03lv3d"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1kj0h4kn4z5xvedu2nd9c4a9a559wvpuvu0h6qn"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1hjct6q7npsspsg3dgvzk3sdf89spmlpfdn6m9d"}}],"sequence":"106"})";
+
+        auto expected_display = R"(
+[0]1
+[1]1
+[2]1
+[3]2
+[4]1
+[5]48
+[0] 1/1 | Chain ID : cosmoshub-2
+[1] 1/1 | Account : 108
+[2] 1/1 | Sequence : 106
+[3] 1/1 | Fee : [{"amount":"600","denom":"uatom"}]
+[4] 1/1 | Gas : 200000
+[5] 1/1 | Memo :
+[6] 1/1 | Type : Withdraw Reward
+[7] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[8] 1/1 | Validator : cosmosvaloper1qwl879nx9t6kef4supyazayf7vjhennyh568ys
+[9] 1/1 | Type : Withdraw Reward
+[10] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[11] 1/1 | Validator : cosmosvaloper1x88j7vp2xnw3zec8ur3g4waxycyz7m0mahdv3p
+[12] 1/1 | Type : Withdraw Reward
+[13] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[14] 1/1 | Validator : cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7
+[15] 1/1 | Type : Withdraw Reward
+[16] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[17] 1/1 | Validator : cosmosvaloper1ttfytaf43nkytzp8hkfjfgjc693ky4t3y2n2ku
+[18] 1/1 | Type : Withdraw Reward
+[19] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[20] 1/1 | Validator : cosmosvaloper1wdrypwex63geqswmcy5qynv4w3z3dyef2qmyna
+[21] 1/1 | Type : Withdraw Reward
+[22] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[23] 1/1 | Validator : cosmosvaloper102ruvpv2srmunfffxavttxnhezln6fnc54at8c
+[24] 1/1 | Type : Withdraw Reward
+[25] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[26] 1/1 | Validator : cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv
+[27] 1/1 | Type : Withdraw Reward
+[28] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[29] 1/1 | Validator : cosmosvaloper1sxx9mszve0gaedz5ld7qdkjkfv8z992ax69k08
+[30] 1/1 | Type : Withdraw Reward
+[31] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[32] 1/1 | Validator : cosmosvaloper1ssm0d433seakyak8kcf93yefhknjleeds4y3em
+[33] 1/1 | Type : Withdraw Reward
+[34] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[35] 1/1 | Validator : cosmosvaloper13sduv92y3xdhy3rpmhakrc3v7t37e7ps9l0kpv
+[36] 1/1 | Type : Withdraw Reward
+[37] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[38] 1/1 | Validator : cosmosvaloper15urq2dtp9qce4fyc85m6upwm9xul3049e02707
+[39] 1/1 | Type : Withdraw Reward
+[40] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[41] 1/1 | Validator : cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj
+[42] 1/1 | Type : Withdraw Reward
+[43] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[44] 1/1 | Validator : cosmosvaloper14lultfckehtszvzw4ehu0apvsr77afvyju5zzy
+[45] 1/1 | Type : Withdraw Reward
+[46] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[47] 1/1 | Validator : cosmosvaloper1k9a0cs97vul8w2vwknlfmpez6prv8klv03lv3d
+[48] 1/1 | Type : Withdraw Reward
+[49] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[50] 1/1 | Validator : cosmosvaloper1kj0h4kn4z5xvedu2nd9c4a9a559wvpuvu0h6qn
+[51] 1/1 | Type : Withdraw Reward
+[52] 1/1 | Delegator : cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh
+[53] 1/1 | Validator : cosmosvaloper1hjct6q7npsspsg3dgvzk3sdf89spmlpfdn6m9d
+----------- 54)";
+
+        auto pages = get_pages(transaction, 100);
+        auto display_pages = get_display_pages(transaction, 100, true);
+
+        std::cout << display_pages << std::endl;
+
+        ASSERT_EQ(expected_display, display_pages);
+    }
+
 }
