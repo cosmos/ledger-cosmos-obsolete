@@ -14,6 +14,8 @@
 *  limitations under the License.
 ********************************************************************************/
 
+#pragma once
+
 #include <gtest/gtest.h>
 #include <lib/json_parser.h>
 
@@ -29,4 +31,4 @@ const char *parse_tx(parsed_json_t *parsed_json, const char *tx, uint16_t screen
 
 std::string get_pages(const char *input_json, int screen_size);
 
-std::string get_display_pages(const char *input_json, int screen_size);
+std::string get_display_pages(const char *input_json, int screen_size, bool make_friendly = false);

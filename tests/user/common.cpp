@@ -78,7 +78,7 @@ std::string get_pages(const char *input_json, int screen_size) {
     return out.str();
 }
 
-std::string get_display_pages(const char *input_json, int screen_size) {
+std::string get_display_pages(const char *input_json, int screen_size, bool make_friendly) {
     parsed_json_t parsed_json;
     const char *err = parse_tx(&parsed_json, input_json, screen_size);
     if (err != nullptr) {
@@ -108,6 +108,11 @@ std::string get_display_pages(const char *input_json, int screen_size) {
             INIT_QUERY(key, sizeof(key), value, sizeof(value), chunk_index)
 
             num_chunks = tx_display_get_item(page_idx);
+
+            if (make_friendly){
+                tx_display_make_friendly();
+            }
+
             if (num_chunks > 0) {
                 out << "[" << page_idx << "] ";
                 out << chunk_index + 1 << "/" << num_chunks << " | ";
