@@ -32,7 +32,7 @@ https://docs.docker.com/install/
 #### Ubuntu Dependencies
 Install the following packages:
 ```
-sudo apt update && apt-get -y install build-essential git sudo wget cmake libssl-dev libgmp-dev autoconf libtool
+sudo apt-get update && sudo apt-get -y install build-essential git sudo wget cmake libssl-dev libgmp-dev autoconf libtool python-pip
 ```
 
 #### OSX Dependencies
