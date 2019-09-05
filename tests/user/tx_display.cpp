@@ -35,11 +35,11 @@ namespace {
         auto err = parse_tx(&parsed_json, transaction, 100);
         ASSERT_STREQ(nullptr, err);
 
-        auto num_pages = tx_display_num_pages();
+        auto num_pages = tx_display_numItems();
         EXPECT_EQ(6, num_pages) << "Invalid number of pages";
 
         auto display_cache = tx_display_cache();
-        EXPECT_EQ(6, display_cache->num_pages) << "Invalid number of pages";
+        EXPECT_EQ(6, display_cache->numItems) << "Invalid number of pages";
 
         EXPECT_EQ(4, display_cache->subroot_start_token[0]) << "Invalid subroot chain_id";
         EXPECT_EQ(2, display_cache->subroot_start_token[1]) << "Invalid subroot account_number";

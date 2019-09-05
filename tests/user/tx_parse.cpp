@@ -107,7 +107,7 @@ namespace {
         auto err = parse_tx(&parsed_json, transaction, 100);
         ASSERT_STREQ(nullptr, err);
 
-        auto num_pages = tx_display_num_pages();
+        auto num_pages = tx_display_numItems();
 
         EXPECT_EQ(0, num_pages) << "Wrong number of pages";
     }
@@ -120,7 +120,7 @@ namespace {
         auto err = parse_tx(&parsed_json, transaction, 100);
         ASSERT_STREQ(nullptr, err);
 
-        auto num_pages = tx_display_num_pages();
+        auto num_pages = tx_display_numItems();
         EXPECT_EQ(10, num_pages) << "Wrong number of pages";
     }
 
@@ -133,6 +133,6 @@ namespace {
         auto err = parse_tx(&parsed_json, transaction, 100);
         ASSERT_STREQ(nullptr, err);
 
-        EXPECT_EQ(22, tx_display_num_pages()) << "Wrong number of pages";
+        EXPECT_EQ(22, tx_display_numItems()) << "Wrong number of items";
     }
 }

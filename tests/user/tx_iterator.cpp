@@ -45,7 +45,7 @@ namespace {
     }
 
     TEST(ParserIterator, MinimalTx_DisplayPages) {
-        auto transaction = R"({"account_number":"V1","chain_id":"V2","fee":{"amount":[{"a":"b"}, {"c":"d"}, {"x":"y"}],"gas":"V3"},"memo":"V4","msgs":[{"m1":"z1"}, {"m2":"z2"}, {"m3":"z3"}],"sequence":"V5"})";
+        auto transaction = R"({"account_number":"V1","chain_id":"V2","fee":{"amount":[{"a":"b"},{"c":"d"},{"x":"y"}],"gas":"V3"},"memo":"V4","msgs":[{"m1":"z1"},{"m2":"z2"},{"m3":"z3"}],"sequence":"V5"})";
         auto expected_display = R"(
 [0]1
 [1]1
@@ -56,7 +56,7 @@ namespace {
 [0] 1/1 | chain_id : V2
 [1] 1/1 | account_number : V1
 [2] 1/1 | sequence : V5
-[3] 1/1 | fee/amount : [{"a":"b"}, {"c":"d"}, {"x":"y"}]
+[3] 1/1 | fee/amount : [{"a":"b"},{"c":"d"},{"x":"y"}]
 [4] 1/1 | fee/gas : V3
 [5] 1/1 | memo : V4
 [6] 1/1 | msgs/m1 : z1
@@ -272,6 +272,54 @@ namespace {
         ASSERT_EQ(expected_display, display_pages);
     }
 
+    TEST(ParserIterator, Enumerate4) {
+        auto transaction =
+            R"({"account_number":"6571","chain_id":"cosmoshub-2","fee":{"amount":[{"amount":"5000","denom":"uatom"}],"gas":"200000"},"memo":"Delegated with Ledger from union.market","msgs":[{"type":"cosmos-sdk/MsgDelegate","value":{"amount":{"amount":"1000000","denom":"uatom"},"delegator_address":"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl","validator_address":"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"}}],"sequence":"0"})";
+
+        auto expected_data = R"(
+[0] 1/1 | account_number : 6571
+[1] 1/1 | chain_id : cosmoshub-2
+[2] 1/1 | fee/amount : [{"amount":"5000","denom":"uatom"}]
+[3] 1/1 | fee/gas : 200000
+[4] 1/1 | memo : Delegated with Ledger from union.market
+[5] 1/1 | msgs/type : cosmos-sdk/MsgDelegate
+[6] 1/4 | msgs/value : {"amount":{"amount":"1000000","denom":"uatom"},"d
+[6] 2/4 | msgs/value : elegator_address":"cosmos102hty0jv2s29lyc4u0tv97z
+[6] 3/4 | msgs/value : 9v298e24t3vwtpl","validator_address":"cosmosvalop
+[6] 4/4 | msgs/value : er1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"}
+[7] 1/1 | sequence : 0
+-----------)";
+
+        auto expected_display = R"(
+[0]1
+[1]1
+[2]1
+[3]2
+[4]1
+[5]4
+[0] 1/1 | chain_id : cosmoshub-2
+[1] 1/1 | account_number : 6571
+[2] 1/1 | sequence : 0
+[3] 1/1 | fee/amount : [{"amount":"5000","denom":"uatom"}]
+[4] 1/1 | fee/gas : 200000
+[5] 1/1 | memo : Delegated with Ledger from union.market
+[6] 1/1 | msgs/type : cosmos-sdk/MsgDelegate
+[7] 1/1 | msgs/value/amount : {"amount":"1000000","denom":"uatom"}
+[8] 1/1 | msgs/value/delegator_address : cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl
+[9] 1/2 | msgs/value/validator_address : cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfyt
+[9] 2/2 | msgs/value/validator_address : vz7
+----------- 10)";
+
+        auto pages = get_pages(transaction, 50);
+        auto display_pages = get_display_pages(transaction, 50);
+
+        std::cout << pages << std::endl;
+        std::cout << display_pages << std::endl;
+
+        ASSERT_EQ(expected_data, pages);
+        ASSERT_EQ(expected_display, display_pages);
+    }
+
     TEST(ParserIterator, ValueCharacterShortToFitScreen) {
         auto transaction = R"({"chain_id":"1234567890AB","fee":"1234"})";
 
@@ -338,7 +386,6 @@ namespace {
         ASSERT_EQ(expected_data, pages);
         ASSERT_EQ(expected_display, display_pages);
     }
-
 
     TEST(ParserIterator, VeryLongValue) {
         auto transaction =

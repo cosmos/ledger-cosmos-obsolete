@@ -39,6 +39,7 @@ file(GLOB_RECURSE USER_JSMN_SRC
 
 file(GLOB_RECURSE USER_LIB_SRC
         src/ledger-user/src/lib/json_parser.c
+        src/ledger-user/src/lib/parser.c
         src/ledger-user/src/lib/tx_parser.c
         src/ledger-user/src/lib/tx_display.c
         src/ledger-user/src/lib/tx_validate.c
@@ -46,7 +47,12 @@ file(GLOB_RECURSE USER_LIB_SRC
 file(GLOB_RECURSE TESTS_USER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/*.cpp)
 
 add_library(user_json_parser STATIC ${USER_LIB_SRC} ${USER_JSMN_SRC})
-target_include_directories(user_json_parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/deps/jsmn/src)
+target_include_directories(user_json_parser PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/deps/jsmn/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/src/lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/deps/ledger-zxlib/include
+        )
 
 add_executable(test_user ${TESTS_USER_SRC})
 target_include_directories(test_user PUBLIC

@@ -16,6 +16,8 @@
 #include "common.h"
 
 #include <lib/tx_display.h>
+#include <lib/parser.h>
+
 #include <gtest/gtest.h>
 #include "common.h"
 
@@ -79,43 +81,44 @@ std::string get_pages(const char *input_json, int screen_size) {
 }
 
 std::string get_display_pages(const char *input_json, int screen_size, bool make_friendly) {
-    parsed_json_t parsed_json;
-    const char *err = parse_tx(&parsed_json, input_json, screen_size);
-    if (err != nullptr) {
-        return std::string(err);
-    }
-    setup_context(&parsed_json, screen_size, input_json);
+    parser_context_t ctx;
 
-    tx_display_index_root();
+    parser_error_t err = parser_parse(&ctx, (uint8_t *) input_json, strlen(input_json));
+
+    if (err != parser_ok) {
+        const char *errMessage = parser_getErrorDescription(err);
+        return std::string(errMessage);
+    }
 
     std::ostringstream out;
     char key[screen_size];
     char value[screen_size];
 
-    auto num_pages = tx_display_num_pages();
+    // CHECK DISPLAY CACHE
     auto display_cache = tx_display_cache();
-
     out << std::endl;
     for (int i = 0; i < sizeof(display_cache->num_subpages); i++) {
         out << "[" << i << "]" << (int) display_cache->num_subpages[i] << std::endl;
     }
 
+    // RETRIEVE PAGES
+    int8_t num_pages = parser_getNumItems(&ctx);
     // Get raw items
-    for (int16_t page_idx = 0; page_idx < num_pages + 1; page_idx++) {
-        int16_t num_chunks = 1;
-        int16_t chunk_index = 0;
-        while (chunk_index < num_chunks) {
-            INIT_QUERY(key, sizeof(key), value, sizeof(value), chunk_index)
+    for (uint8_t displayIdx = 0; displayIdx < num_pages + 1; displayIdx++) {
 
-            num_chunks = tx_display_get_item(page_idx);
+        uint8_t pageIndex = 0;
+        uint8_t pageCount = 1;
 
-            if (make_friendly){
-                tx_display_make_friendly();
-            }
+        while (pageIndex < pageCount) {
+            err = parser_getItem(&ctx,
+                                 displayIdx,
+                                 key, sizeof(key),
+                                 value, sizeof(value),
+                                 pageIndex, &pageCount);
 
-            if (num_chunks > 0) {
-                out << "[" << page_idx << "] ";
-                out << chunk_index + 1 << "/" << num_chunks << " | ";
+            if (pageCount > 0 && err == parser_ok) {
+                out << "[" << (int) displayIdx << "] ";
+                out << (int) (pageIndex + 1) << "/" << (int) pageCount << " | ";
                 out << key;
                 if (strlen(value) > 0) {
                     out << " : " << value;
@@ -124,12 +127,10 @@ std::string get_display_pages(const char *input_json, int screen_size, bool make
                 }
                 out << std::endl;
             } else {
-                out << "----------- " << num_pages;
+                out << "----------- " << (int) num_pages;
                 return out.str();
             }
-            chunk_index++;
-
-
+            pageIndex++;
         }
     }
 
