@@ -18,7 +18,6 @@ project(ledger-cosmos VERSION 0.0.0)
 enable_testing()
 
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 add_subdirectory(cmake/gtest)
 
 string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fsanitize=address -fno-omit-frame-pointer")
@@ -38,11 +37,13 @@ file(GLOB_RECURSE USER_JSMN_SRC
         )
 
 file(GLOB_RECURSE USER_LIB_SRC
-        src/ledger-user/src/lib/json_parser.c
         src/ledger-user/src/lib/parser.c
-        src/ledger-user/src/lib/tx_parser.c
-        src/ledger-user/src/lib/tx_display.c
-        src/ledger-user/src/lib/tx_validate.c
+        src/ledger-user/src/lib/parser_impl.c
+
+        src/ledger-user/src/lib/json/json_parser.c
+        src/ledger-user/src/lib/json/tx_parser.c
+        src/ledger-user/src/lib/json/tx_display.c
+        src/ledger-user/src/lib/json/tx_validate.c
         )
 file(GLOB_RECURSE TESTS_USER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/*.cpp)
 
@@ -54,12 +55,17 @@ target_include_directories(user_json_parser PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/deps/ledger-zxlib/include
         )
 
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/deps/json)
+
 add_executable(test_user ${TESTS_USER_SRC})
 target_include_directories(test_user PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/deps/jsmn/src
-)
-target_link_libraries(test_user gtest_main user_json_parser)
+        ${gtest_SOURCE_DIR}/include
+        ${gmock_SOURCE_DIR}/include
+        )
+target_link_libraries(test_user gtest_main user_json_parser nlohmann_json::nlohmann_json)
 
 add_test(gtest ${PROJECT_BINARY_DIR}/test_user)
 
@@ -94,18 +100,17 @@ add_test(gtest ${PROJECT_BINARY_DIR}/test_val)
 # Force tests to depend from app compiling
 ###############################################################
 
-set(DISABLE_DOCKER_BUILDS OFF  CACHE BOOL "Disables Docker Builds")
+set(DISABLE_DOCKER_BUILDS OFF CACHE BOOL "Disables Docker Builds")
 
 if (NOT DISABLE_DOCKER_BUILDS)
-    add_custom_target(ledger_val_app
-            COMMAND make build_tendermint
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )
     add_custom_target(ledger_user_app
             COMMAND make build_cosmos
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
             )
-
-    add_dependencies(test_val ledger_val_app)
     add_dependencies(test_user ledger_user_app)
-endif()
+    add_custom_target(ledger_val_app
+            COMMAND make build_tendermint
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            )
+    add_dependencies(test_val ledger_val_app)
+endif ()

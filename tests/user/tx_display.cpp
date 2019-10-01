@@ -15,17 +15,11 @@
 ********************************************************************************/
 
 #include "gtest/gtest.h"
-#include <cstdio>
-#include <iostream>
-#include <memory>
-#include <stdexcept>
 #include <string>
-#include <array>
-#include <jsmn.h>
-#include <lib/json_parser.h>
-#include <lib/tx_parser.h>
-#include <lib/tx_display.h>
-#include "common.h"
+#include <lib/json/json_parser.h>
+#include <lib/json/tx_parser.h>
+#include <lib/json/tx_display.h>
+#include "util/common.h"
 
 namespace {
     TEST(TxDisplay, Indexing) {
@@ -89,7 +83,7 @@ namespace {
         int16_t found;
         // We should find it.. but later tx_display should fail
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4);
-        tx_ctx.query.item_index = 5;
+        parser_tx_obj.tx_ctx.query.item_index = 5;
         found = tx_traverse(0);
         EXPECT_EQ(1, found) << "Item not found";
 

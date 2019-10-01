@@ -15,16 +15,10 @@
 ********************************************************************************/
 
 #include "gtest/gtest.h"
-#include <cstdio>
-#include <iostream>
-#include <memory>
-#include <stdexcept>
 #include <string>
-#include <array>
-#include <jsmn.h>
-#include <lib/json_parser.h>
-#include <lib/tx_display.h>
-#include "common.h"
+#include <lib/json/json_parser.h>
+#include <lib/json/tx_display.h>
+#include "util/common.h"
 
 namespace {
     TEST(TxParse, Tx_Traverse) {
@@ -42,7 +36,7 @@ namespace {
 
         // Try second key - first chunk
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4);
-        tx_ctx.query.item_index = 1;
+        parser_tx_obj.tx_ctx.query.item_index = 1;
         found = tx_traverse(0);
         EXPECT_EQ(1, found) << "Item not found";
         EXPECT_EQ_STR(key, "keyB", "Invalid key");
@@ -50,13 +44,13 @@ namespace {
 
         // Try second key - Second chunk
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 1, 4);
-        tx_ctx.query.item_index = 1;
+        parser_tx_obj.tx_ctx.query.item_index = 1;
         found = tx_traverse(0);
         EXPECT_EQ(TX_TOKEN_NOT_FOUND, found) << "Item not found";
 
         // Find first key
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4);
-        tx_ctx.query.item_index = 0;
+        parser_tx_obj.tx_ctx.query.item_index = 0;
         found = tx_traverse(0);
         EXPECT_EQ(1, found) << "Item not found";
         EXPECT_EQ_STR(key, "keyA", "Invalid key");
@@ -64,7 +58,7 @@ namespace {
 
         // Try the same again
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4);
-        tx_ctx.query.item_index = 0;
+        parser_tx_obj.tx_ctx.query.item_index = 0;
         found = tx_traverse(0);
         EXPECT_EQ(1, found) << "Item not found";
         EXPECT_EQ_STR(key, "keyA", "Invalid key");
@@ -72,7 +66,7 @@ namespace {
 
         // Try last key
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4);
-        tx_ctx.query.item_index = 2;
+        parser_tx_obj.tx_ctx.query.item_index = 2;
         found = tx_traverse(0);
         EXPECT_EQ(1, found) << "Item not found";
         EXPECT_EQ_STR(key, "keyC", "Invalid key");
@@ -127,7 +121,7 @@ namespace {
     TEST(TxParse, Page_Count_MultipleMsgs) {
 
         auto transaction =
-                R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
+            R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t parsed_json;
         auto err = parse_tx(&parsed_json, transaction, 100);
