@@ -42,74 +42,74 @@ namespace {
         parsed_json_t parserData = {false};
         json_parse(&parserData, "");
 
-        EXPECT_FALSE(parserData.IsValid);
-        EXPECT_EQ(0, parserData.NumberOfTokens);
+        EXPECT_FALSE(parserData.isValid);
+        EXPECT_EQ(0, parserData.numberOfTokens);
     }
 
     TEST(JsonParserTest, SinglePrimitive) {
         parsed_json_t parserData = {false};
         json_parse(&parserData, "EMPTY");
 
-        EXPECT_TRUE(parserData.IsValid);
-        EXPECT_EQ(1, parserData.NumberOfTokens);
-        EXPECT_TRUE(parserData.Tokens[0].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.isValid);
+        EXPECT_EQ(1, parserData.numberOfTokens);
+        EXPECT_TRUE(parserData.tokens[0].type == jsmntype_t::JSMN_PRIMITIVE);
     }
 
     TEST(JsonParserTest, KeyValuePrimitives) {
         parsed_json_t parserData = {false};
         json_parse(&parserData, "KEY : VALUE");
 
-        EXPECT_TRUE(parserData.IsValid);
-        EXPECT_EQ(2, parserData.NumberOfTokens);
-        EXPECT_TRUE(parserData.Tokens[0].type == jsmntype_t::JSMN_PRIMITIVE);
-        EXPECT_TRUE(parserData.Tokens[1].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.isValid);
+        EXPECT_EQ(2, parserData.numberOfTokens);
+        EXPECT_TRUE(parserData.tokens[0].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.tokens[1].type == jsmntype_t::JSMN_PRIMITIVE);
     }
 
     TEST(JsonParserTest, SingleString) {
         parsed_json_t parserData = {false};
         json_parse(&parserData, "\"EMPTY\"");
 
-        EXPECT_TRUE(parserData.IsValid);
-        EXPECT_EQ(1, parserData.NumberOfTokens);
-        EXPECT_TRUE(parserData.Tokens[0].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.isValid);
+        EXPECT_EQ(1, parserData.numberOfTokens);
+        EXPECT_TRUE(parserData.tokens[0].type == jsmntype_t::JSMN_STRING);
     }
 
     TEST(JsonParserTest, KeyValueStrings) {
         parsed_json_t parserData = {false};
         json_parse(&parserData, R"("KEY" : "VALUE")");
 
-        EXPECT_TRUE(parserData.IsValid);
-        EXPECT_EQ(2, parserData.NumberOfTokens);
-        EXPECT_TRUE(parserData.Tokens[0].type == jsmntype_t::JSMN_STRING);
-        EXPECT_TRUE(parserData.Tokens[1].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.isValid);
+        EXPECT_EQ(2, parserData.numberOfTokens);
+        EXPECT_TRUE(parserData.tokens[0].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.tokens[1].type == jsmntype_t::JSMN_STRING);
     }
 
     TEST(JsonParserTest, SimpleArray) {
         parsed_json_t parserData = {false};
         json_parse(&parserData, "LIST : [1, 2, 3, 4]");
 
-        EXPECT_TRUE(parserData.IsValid);
-        EXPECT_EQ(6, parserData.NumberOfTokens);
-        EXPECT_TRUE(parserData.Tokens[0].type == jsmntype_t::JSMN_PRIMITIVE);
-        EXPECT_TRUE(parserData.Tokens[1].type == jsmntype_t::JSMN_ARRAY);
-        EXPECT_TRUE(parserData.Tokens[2].type == jsmntype_t::JSMN_PRIMITIVE);
-        EXPECT_TRUE(parserData.Tokens[3].type == jsmntype_t::JSMN_PRIMITIVE);
-        EXPECT_TRUE(parserData.Tokens[4].type == jsmntype_t::JSMN_PRIMITIVE);
-        EXPECT_TRUE(parserData.Tokens[5].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.isValid);
+        EXPECT_EQ(6, parserData.numberOfTokens);
+        EXPECT_TRUE(parserData.tokens[0].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.tokens[1].type == jsmntype_t::JSMN_ARRAY);
+        EXPECT_TRUE(parserData.tokens[2].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.tokens[3].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.tokens[4].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.tokens[5].type == jsmntype_t::JSMN_PRIMITIVE);
     }
 
     TEST(JsonParserTest, MixedArray) {
         parsed_json_t parserData = {false};
         json_parse(&parserData, R"(LIST : [1, "Text", 3, "Another text"])");
 
-        EXPECT_TRUE(parserData.IsValid);
-        EXPECT_EQ(6, parserData.NumberOfTokens);
-        EXPECT_TRUE(parserData.Tokens[0].type == jsmntype_t::JSMN_PRIMITIVE);
-        EXPECT_TRUE(parserData.Tokens[1].type == jsmntype_t::JSMN_ARRAY);
-        EXPECT_TRUE(parserData.Tokens[2].type == jsmntype_t::JSMN_PRIMITIVE);
-        EXPECT_TRUE(parserData.Tokens[3].type == jsmntype_t::JSMN_STRING);
-        EXPECT_TRUE(parserData.Tokens[4].type == jsmntype_t::JSMN_PRIMITIVE);
-        EXPECT_TRUE(parserData.Tokens[5].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.isValid);
+        EXPECT_EQ(6, parserData.numberOfTokens);
+        EXPECT_TRUE(parserData.tokens[0].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.tokens[1].type == jsmntype_t::JSMN_ARRAY);
+        EXPECT_TRUE(parserData.tokens[2].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.tokens[3].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.tokens[4].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.tokens[5].type == jsmntype_t::JSMN_STRING);
     }
 
     TEST(JsonParserTest, SimpleObject) {
@@ -122,18 +122,18 @@ namespace {
                                 "\"total\":123 }"
                                 "}");
 
-        EXPECT_TRUE(parserData.IsValid);
-        EXPECT_EQ(10, parserData.NumberOfTokens);
-        EXPECT_TRUE(parserData.Tokens[0].type == jsmntype_t::JSMN_PRIMITIVE);
-        EXPECT_TRUE(parserData.Tokens[1].type == jsmntype_t::JSMN_OBJECT);
-        EXPECT_TRUE(parserData.Tokens[2].type == jsmntype_t::JSMN_STRING);
-        EXPECT_TRUE(parserData.Tokens[3].type == jsmntype_t::JSMN_STRING);
-        EXPECT_TRUE(parserData.Tokens[4].type == jsmntype_t::JSMN_STRING);
-        EXPECT_TRUE(parserData.Tokens[5].type == jsmntype_t::JSMN_OBJECT);
-        EXPECT_TRUE(parserData.Tokens[6].type == jsmntype_t::JSMN_STRING);
-        EXPECT_TRUE(parserData.Tokens[7].type == jsmntype_t::JSMN_STRING);
-        EXPECT_TRUE(parserData.Tokens[8].type == jsmntype_t::JSMN_STRING);
-        EXPECT_TRUE(parserData.Tokens[9].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.isValid);
+        EXPECT_EQ(10, parserData.numberOfTokens);
+        EXPECT_TRUE(parserData.tokens[0].type == jsmntype_t::JSMN_PRIMITIVE);
+        EXPECT_TRUE(parserData.tokens[1].type == jsmntype_t::JSMN_OBJECT);
+        EXPECT_TRUE(parserData.tokens[2].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.tokens[3].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.tokens[4].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.tokens[5].type == jsmntype_t::JSMN_OBJECT);
+        EXPECT_TRUE(parserData.tokens[6].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.tokens[7].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.tokens[8].type == jsmntype_t::JSMN_STRING);
+        EXPECT_TRUE(parserData.tokens[9].type == jsmntype_t::JSMN_PRIMITIVE);
     }
 
     TEST(JsonParserTest, ArrayElementCount_objects) {
@@ -187,7 +187,7 @@ namespace {
 
         int token_index = array_get_nth_element(2, 1, &parsed_json);
         EXPECT_EQ(token_index, 8) << "Wrong token index returned";
-        EXPECT_EQ(parsed_json.Tokens[token_index].type, JSMN_OBJECT) << "Wrong token type returned";
+        EXPECT_EQ(parsed_json.tokens[token_index].type, JSMN_OBJECT) << "Wrong token type returned";
     }
 
     TEST(JsonParserTest, ArrayElementGet_primitives) {
@@ -199,7 +199,7 @@ namespace {
 
         int token_index = array_get_nth_element(2, 5, &parsed_json);
         EXPECT_EQ(token_index, 8) << "Wrong token index returned";
-        EXPECT_EQ(parsed_json.Tokens[token_index].type, JSMN_PRIMITIVE) << "Wrong token type returned";
+        EXPECT_EQ(parsed_json.tokens[token_index].type, JSMN_PRIMITIVE) << "Wrong token type returned";
     }
 
     TEST(TxValidationTest, ArrayElementGet_strings) {
@@ -211,7 +211,7 @@ namespace {
 
         int token_index = array_get_nth_element(2, 0, &parsed_json);
         EXPECT_EQ(token_index, 3) << "Wrong token index returned";
-        EXPECT_EQ(parsed_json.Tokens[token_index].type, JSMN_STRING) << "Wrong token type returned";
+        EXPECT_EQ(parsed_json.tokens[token_index].type, JSMN_STRING) << "Wrong token type returned";
     }
 
     TEST(TxValidationTest, ArrayElementGet_empty) {
@@ -313,8 +313,8 @@ namespace {
 
         int token_index = object_get_nth_key(0, 0, &parsed_json);
         EXPECT_EQ(token_index, 1) << "Wrong token index";
-        EXPECT_EQ(parsed_json.Tokens[token_index].type, JSMN_STRING) << "Wrong token type returned";
-        EXPECT_EQ(memcmp(transaction + parsed_json.Tokens[token_index].start, "age", strlen("age")), 0)
+        EXPECT_EQ(parsed_json.tokens[token_index].type, JSMN_STRING) << "Wrong token type returned";
+        EXPECT_EQ(memcmp(transaction + parsed_json.tokens[token_index].start, "age", strlen("age")), 0)
                         << "Wrong key returned";
     }
 
@@ -327,8 +327,8 @@ namespace {
 
         int token_index = object_get_nth_value(0, 3, &parsed_json);
         EXPECT_EQ(token_index, 8) << "Wrong token index";
-        EXPECT_EQ(parsed_json.Tokens[token_index].type, JSMN_STRING) << "Wrong token type returned";
-        EXPECT_EQ(memcmp(transaction + parsed_json.Tokens[token_index].start, "july", strlen("july")), 0)
+        EXPECT_EQ(parsed_json.tokens[token_index].type, JSMN_STRING) << "Wrong token type returned";
+        EXPECT_EQ(memcmp(transaction + parsed_json.tokens[token_index].start, "july", strlen("july")), 0)
                         << "Wrong key returned";
     }
 
@@ -364,10 +364,10 @@ namespace {
         parsed_json_t parsed_json;
         json_parse(&parsed_json, transaction);
 
-        int token_index = object_get_value(0, "years", &parsed_json, transaction);
+        int token_index = object_get_value(&parsed_json, transaction, 0, "years");
 
         EXPECT_EQ(token_index, 14) << "Wrong token index";
-        EXPECT_EQ(parsed_json.Tokens[token_index].type, JSMN_ARRAY) << "Wrong token type returned";
+        EXPECT_EQ(parsed_json.tokens[token_index].type, JSMN_ARRAY) << "Wrong token type returned";
         EXPECT_EQ(array_get_element_count(token_index, &parsed_json), 5) << "Wrong number of array elements";
     }
 
@@ -378,17 +378,17 @@ namespace {
         parsed_json_t parsed_json;
         json_parse(&parsed_json, transaction);
 
-        int token_index = object_get_value(0, "alt_bytes", &parsed_json, transaction);
+        int token_index = object_get_value(&parsed_json, transaction, 0, "alt_bytes");
         EXPECT_EQ(token_index, -1) << "Wrong token index"; // alt_bytes should not be found
-        token_index = object_get_value(0, "account_number", &parsed_json, transaction);
+        token_index = object_get_value(&parsed_json, transaction, 0, "account_number");
         EXPECT_EQ(token_index, 2) << "Wrong token index"; // alt_bytes should not be found
-        token_index = object_get_value(0, "chain_id", &parsed_json, transaction);
+        token_index = object_get_value(&parsed_json, transaction, 0, "chain_id");
         EXPECT_EQ(token_index, 4) << "Wrong token index";
-        token_index = object_get_value(0, "fee", &parsed_json, transaction);
+        token_index = object_get_value(&parsed_json, transaction, 0, "fee");
         EXPECT_EQ(token_index, 6) << "Wrong token index";
-        token_index = object_get_value(0, "msgs", &parsed_json, transaction);
+        token_index = object_get_value(&parsed_json, transaction, 0, "msgs");
         EXPECT_EQ(token_index, 19) << "Wrong token index";
-        token_index = object_get_value(0, "sequence", &parsed_json, transaction);
+        token_index = object_get_value(&parsed_json, transaction, 0, "sequence");
         EXPECT_EQ(token_index, 46) << "Wrong token index";
     }
 }
