@@ -24,6 +24,7 @@
 #include <jsmn.h>
 #include <lib/json/json_parser.h>
 #include <lib/json/tx_display.h>
+#include <lib/json/tx_validate.h>
 #include "util/common.h"
 
 namespace {
@@ -36,7 +37,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
@@ -49,7 +50,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Missing account_number",
                       "Validation should fail because account_number is missing");
     }
@@ -63,7 +64,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Missing chain_id", "Validation should fail because chain_id is missing");
     }
 
@@ -76,7 +77,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Missing fee", "Validation should fail because fee is missing");
     }
 
@@ -89,7 +90,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Missing msgs", "Validation should fail because msgs is missing");
     }
 
@@ -102,7 +103,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Missing sequence", "Validation should fail because sequence is missing");
     }
 
@@ -115,7 +116,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Contains whitespace in the corpus",
                       "Validation should fail because contains whitespace in the corpus");
     }
@@ -129,7 +130,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Contains whitespace in the corpus",
                       "Validation should fail because contains whitespace in the corpus");
     }
@@ -143,7 +144,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Contains whitespace in the corpus",
                       "Validation should fail because contains whitespace in the corpus");
     }
@@ -157,7 +158,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Contains whitespace in the corpus",
                       "Validation should fail because contains whitespace in the corpus");
     }
@@ -171,7 +172,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
@@ -184,7 +185,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
@@ -197,7 +198,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Dictionaries are not sorted",
                       "Validation should fail because dictionaries are not sorted");
     }
@@ -211,7 +212,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Dictionaries are not sorted",
                       "Validation should fail because dictionaries are not sorted");
     }
@@ -225,7 +226,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Dictionaries are not sorted",
                       "Validation should fail because dictionaries are not sorted");
     }
@@ -243,7 +244,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
@@ -255,7 +256,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ(nullptr, err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_TRUE(error_msg == nullptr) << "Validation failed, error: " << error_msg;
     }
 
@@ -289,7 +290,7 @@ namespace {
         const char *err = json_parse(&json, transaction);
         ASSERT_STREQ("NOMEM: JSON string contains too many tokens", err);
 
-        const char *error_msg = tx_validate(&json, transaction);
+        const char *error_msg = tx_validate(&json);
         EXPECT_EQ_STR(error_msg, "JSON Missing chain_id", "Validation failed, error");
     }
 }

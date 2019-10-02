@@ -18,6 +18,7 @@
 #include <string>
 #include <lib/json/json_parser.h>
 #include <lib/json/tx_display.h>
+#include <lib/json/tx_parser.h>
 #include "util/common.h"
 
 namespace {
@@ -28,15 +29,13 @@ namespace {
         auto err = parse_tx(&parsed_json, transaction, 100);
         ASSERT_STREQ(nullptr, err);
 
-        tx_display_index_root();
-
         char key[100];
         char val[100];
         int16_t found;
 
         // Try second key - first chunk
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4);
-        parser_tx_obj.tx_ctx.query.item_index = 1;
+        parser_tx_obj.query.item_index = 1;
         found = tx_traverse(0);
         EXPECT_EQ(1, found) << "Item not found";
         EXPECT_EQ_STR(key, "keyB", "Invalid key");
@@ -44,13 +43,13 @@ namespace {
 
         // Try second key - Second chunk
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 1, 4);
-        parser_tx_obj.tx_ctx.query.item_index = 1;
+        parser_tx_obj.query.item_index = 1;
         found = tx_traverse(0);
         EXPECT_EQ(TX_TOKEN_NOT_FOUND, found) << "Item not found";
 
         // Find first key
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4);
-        parser_tx_obj.tx_ctx.query.item_index = 0;
+        parser_tx_obj.query.item_index = 0;
         found = tx_traverse(0);
         EXPECT_EQ(1, found) << "Item not found";
         EXPECT_EQ_STR(key, "keyA", "Invalid key");
@@ -58,7 +57,7 @@ namespace {
 
         // Try the same again
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4);
-        parser_tx_obj.tx_ctx.query.item_index = 0;
+        parser_tx_obj.query.item_index = 0;
         found = tx_traverse(0);
         EXPECT_EQ(1, found) << "Item not found";
         EXPECT_EQ_STR(key, "keyA", "Invalid key");
@@ -66,7 +65,7 @@ namespace {
 
         // Try last key
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4);
-        parser_tx_obj.tx_ctx.query.item_index = 2;
+        parser_tx_obj.query.item_index = 2;
         found = tx_traverse(0);
         EXPECT_EQ(1, found) << "Item not found";
         EXPECT_EQ_STR(key, "keyC", "Invalid key");

@@ -364,7 +364,7 @@ namespace {
         parsed_json_t parsed_json;
         json_parse(&parsed_json, transaction);
 
-        int token_index = object_get_value(&parsed_json, transaction, 0, "years");
+        int token_index = object_get_value(&parsed_json, 0, "years");
 
         EXPECT_EQ(token_index, 14) << "Wrong token index";
         EXPECT_EQ(parsed_json.tokens[token_index].type, JSMN_ARRAY) << "Wrong token type returned";
@@ -378,17 +378,17 @@ namespace {
         parsed_json_t parsed_json;
         json_parse(&parsed_json, transaction);
 
-        int token_index = object_get_value(&parsed_json, transaction, 0, "alt_bytes");
+        int token_index = object_get_value(&parsed_json, 0, "alt_bytes");
         EXPECT_EQ(token_index, -1) << "Wrong token index"; // alt_bytes should not be found
-        token_index = object_get_value(&parsed_json, transaction, 0, "account_number");
+        token_index = object_get_value(&parsed_json, 0, "account_number");
         EXPECT_EQ(token_index, 2) << "Wrong token index"; // alt_bytes should not be found
-        token_index = object_get_value(&parsed_json, transaction, 0, "chain_id");
+        token_index = object_get_value(&parsed_json, 0, "chain_id");
         EXPECT_EQ(token_index, 4) << "Wrong token index";
-        token_index = object_get_value(&parsed_json, transaction, 0, "fee");
+        token_index = object_get_value(&parsed_json, 0, "fee");
         EXPECT_EQ(token_index, 6) << "Wrong token index";
-        token_index = object_get_value(&parsed_json, transaction, 0, "msgs");
+        token_index = object_get_value(&parsed_json, 0, "msgs");
         EXPECT_EQ(token_index, 19) << "Wrong token index";
-        token_index = object_get_value(&parsed_json, transaction, 0, "sequence");
+        token_index = object_get_value(&parsed_json, 0, "sequence");
         EXPECT_EQ(token_index, 46) << "Wrong token index";
     }
 }
