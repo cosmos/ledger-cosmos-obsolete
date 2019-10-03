@@ -28,7 +28,7 @@ void setup_context(parsed_json_t *parsed_json,
                    unsigned short screen_size,
                    const char *transaction);
 
-const char *parse_tx(parsed_json_t *parsed_json, const char *tx, uint16_t screen_size);
+parser_error_t parse_tx(parsed_json_t *parsed_json, const char *tx);
 
 std::vector<std::string> dumpUI(parser_context_t *ctx, uint16_t maxKeyLen, uint16_t maxValueLen);
 

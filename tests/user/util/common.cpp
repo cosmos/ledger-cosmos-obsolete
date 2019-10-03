@@ -19,7 +19,7 @@
 #include <lib/parser.h>
 #include "common.h"
 
-const char *parse_tx(parsed_json_t *parsed_json, const char *tx, uint16_t screen_size) {
+parser_error_t parse_tx(parsed_json_t *parsed_json, const char *tx) {
     return json_parse(parsed_json, tx);
 }
 
