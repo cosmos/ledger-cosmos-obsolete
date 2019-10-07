@@ -23,6 +23,18 @@
 #include "util/common.h"
 
 namespace {
+    parser_error_t tx_traverse(int16_t root_token_index, uint8_t *numChunks) {
+        uint16_t ret_value_token_index;
+        parser_error_t err = tx_traverse_find(root_token_index, &ret_value_token_index);
+
+        if (err != parser_ok)
+            return err;
+
+        return tx_getToken(ret_value_token_index,
+                           parser_tx_obj.query.out_val, parser_tx_obj.query.out_val_len,
+                           parser_tx_obj.query.chunk_index, numChunks);
+    }
+
     TEST(TxParse, Tx_Traverse) {
         auto transaction = R"({"keyA":"123456", "keyB":"abcdefg", "keyC":""})";
 
@@ -39,7 +51,6 @@ namespace {
         // Try second key - first chunk
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4);
         parser_tx_obj.query.item_index = 1;
-
 
         err = tx_traverse(0, &numChunks);
         EXPECT_EQ(err, parser_ok) << parser_getErrorDescription(err);
