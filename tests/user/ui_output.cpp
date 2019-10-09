@@ -34,15 +34,6 @@ typedef struct {
 
 class JsonTests : public ::testing::TestWithParam<testcase_t> {
 public:
-//    struct PrintToStringParamName {
-//        template<class ParamType>
-//        std::string operator()(const testing::TestParamInfo<ParamType> &info) const {
-//            auto p = static_cast<testcase_t>(info.param);
-//            std::stringstream ss;
-//            ss << p.index << "_" << p.name;
-//            return ss.str();
-//        }
-//    };
 };
 
 std::vector<testcase_t> GetJsonTestCases() {
