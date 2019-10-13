@@ -45,7 +45,14 @@ file(GLOB_RECURSE USER_LIB_SRC
         src/ledger-user/src/lib/json/tx_display.c
         src/ledger-user/src/lib/json/tx_validate.c
         )
-file(GLOB_RECURSE TESTS_USER_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/*.cpp)
+
+file(GLOB_RECURSE TESTS_USER_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/*.cpp)
+
+file(GLOB_RECURSE FUZZING_USER_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/fuzzingMain.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/util/common.cpp
+        )
 
 add_library(user_json_parser STATIC ${USER_LIB_SRC} ${USER_JSMN_SRC})
 target_include_directories(user_json_parser PUBLIC
@@ -66,8 +73,15 @@ target_include_directories(test_user PUBLIC
         ${gmock_SOURCE_DIR}/include
         )
 target_link_libraries(test_user gtest_main user_json_parser nlohmann_json::nlohmann_json)
-
 add_test(gtest ${PROJECT_BINARY_DIR}/test_user)
+
+add_executable(fuzzing_user ${FUZZING_USER_SRC})
+target_include_directories(fuzzing_user PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/deps/jsmn/src
+        )
+target_link_libraries(fuzzing_user user_json_parser)
+
 
 ###############################################################
 ###############################################################

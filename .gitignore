@@ -49,3 +49,4 @@ src/ledger/pkgdemo/app\.hex
 
 \deps/*
 !\deps/nanos-secure-sdk
+build/

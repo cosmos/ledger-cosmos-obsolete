@@ -16,17 +16,13 @@
 
 #pragma once
 
-#include <gtest/gtest.h>
 #include <lib/json/json_parser.h>
 #include <lib/parser_impl.h>
+#include <vector>
 
 #define EXPECT_EQ_STR(_STR1, _STR2, _ERROR_MESSAGE) { if (_STR1 != nullptr & _STR2 != nullptr) \
 EXPECT_TRUE(!strcmp(_STR1, _STR2)) << _ERROR_MESSAGE << ", expected: " << _STR2 << ", received: " << _STR1; \
 else FAIL() << "One of the strings is null"; }
-
-void setup_context(parsed_json_t *parsed_json,
-                   unsigned short screen_size,
-                   const char *transaction);
 
 parser_error_t parse_tx(parsed_json_t *parsed_json, const char *tx);
 

@@ -13,10 +13,10 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 ********************************************************************************/
-#include <gtest/gtest.h>
-
 #include <lib/json/tx_display.h>
 #include <lib/parser.h>
+#include <sstream>
+#include <string>
 #include "common.h"
 
 parser_error_t parse_tx(parsed_json_t *parsed_json, const char *tx) {
