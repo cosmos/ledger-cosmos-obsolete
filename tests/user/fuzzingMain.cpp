@@ -1,11 +1,16 @@
 #include <iostream>
 #include <lib/parser_common.h>
 #include <lib/parser.h>
+#include <fstream>
 #include "util/common.h"
 
 #ifndef __AFL_LOOP
-#define __AFL_LOOP 0
+#define __AFL_LOOP(x) (0)
 #endif
+
+///
+/// This file is just a fuzzing stub used by afl
+///
 
 void parse(std::istream &istream) {
     parser_context_t ctx;
@@ -20,14 +25,21 @@ void parse(std::istream &istream) {
 
     auto output = dumpUI(&ctx, 40, 40);
 
-    for (auto line : output) {
+    for (const auto& line : output) {
         std::cout << line << std::endl;
     }
 }
 
-int main(int argc, char** argv) {
-    while (__AFL_LOOP(1000)) {
-        parse(std::cin);
+int main(int argc, char **argv) {
+    if (argc>1) {
+        std::ifstream fin;
+        fin.open(argv[1]);
+        parse(fin);
+    } else {
+        while (__AFL_LOOP(1000)) {
+            parse(std::cin);
+        }
     }
+
     return 0;
 }
