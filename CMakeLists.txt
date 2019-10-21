@@ -75,12 +75,12 @@ target_include_directories(test_user PUBLIC
 target_link_libraries(test_user gtest_main user_json_parser nlohmann_json::nlohmann_json)
 add_test(gtest ${PROJECT_BINARY_DIR}/test_user)
 
-add_executable(fuzzing_user ${FUZZING_USER_SRC})
-target_include_directories(fuzzing_user PUBLIC
+add_executable(fuzzing_stub ${FUZZING_USER_SRC})
+target_include_directories(fuzzing_stub PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger-user/deps/jsmn/src
         )
-target_link_libraries(fuzzing_user user_json_parser)
+target_link_libraries(fuzzing_stub user_json_parser)
 
 
 ###############################################################
