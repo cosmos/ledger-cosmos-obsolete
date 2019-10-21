@@ -50,7 +50,7 @@ file(GLOB_RECURSE TESTS_USER_SRC
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/*.cpp)
 
 file(GLOB_RECURSE FUZZING_USER_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/fuzzingMain.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/fuzzing/fuzzingMain.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/user/util/common.cpp
         )
 
