@@ -99,7 +99,7 @@
       "0 | Chain ID : local-testnet",
       "1 | Account : 2",
       "2 | Sequence : 0",
-      "3 | Fee : Unexpected field",
+      "3 | Fee : Empty",
       "4 | Gas : 500000",
       "5 | Memo : abc",
       "6 | msgs/description : test",
