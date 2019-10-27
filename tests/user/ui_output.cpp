@@ -29,7 +29,8 @@ using json = nlohmann::json;
 typedef struct {
     std::string name;
     std::string tx;
-    uint16_t err;
+    std::string parsingErr;
+    std::string validationErr;
     std::vector<std::string> expected;
 } testcase_t;
 
@@ -62,12 +63,30 @@ std::vector<testcase_t> GetJsonTestCases() {
         answer.push_back(testcase_t{
             item["name"],
             txStr,
-            item["err"],
+            item["parsingErr"],
+            item["validationErr"],
             item["expected"],
         });
     }
 
     return answer;
+}
+
+void validate_testcase(const testcase_t &tc) {
+    parser_context_t ctx;
+    parser_error_t err;
+
+    const auto *buffer = (const uint8_t *) tc.tx.c_str();
+    uint16_t bufferLen = tc.tx.size();
+
+    err = parser_parse(&ctx, buffer, bufferLen);
+    ASSERT_EQ(parser_getErrorDescription(err), tc.parsingErr) << "Parsing error mismatch";
+
+    if (err != parser_ok)
+        return;
+
+    err = parser_validate(&ctx);
+    EXPECT_EQ( parser_getErrorDescription(err), tc.validationErr) << "Validation error mismatch";
 }
 
 void check_testcase(const testcase_t &tc) {
@@ -78,14 +97,14 @@ void check_testcase(const testcase_t &tc) {
     uint16_t bufferLen = tc.tx.size();
 
     err = parser_parse(&ctx, buffer, bufferLen);
-    ASSERT_EQ(err, tc.err) << parser_getErrorDescription(err);
+    ASSERT_EQ(parser_getErrorDescription(err), tc.parsingErr)  << "Parsing error mismatch";
 
-    if (err!=parser_ok)
+    if (err != parser_ok)
         return;
 
     auto output = dumpUI(&ctx, 40, 40);
 
-    for (const auto & i : output) {
+    for (const auto &i : output) {
         std::cout << i << std::endl;
     }
     std::cout << std::endl << std::endl;
@@ -106,5 +125,7 @@ INSTANTIATE_TEST_CASE_P
     ::testing::ValuesIn(GetJsonTestCases()),
     JsonTests::PrintToStringParamName()
 );
+
+TEST_P(JsonTests, ValidateTestcase) { validate_testcase(GetParam()); }
 
 TEST_P(JsonTests, CheckUIOutput) { check_testcase(GetParam()); }

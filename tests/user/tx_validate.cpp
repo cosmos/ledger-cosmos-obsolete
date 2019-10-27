@@ -318,7 +318,7 @@ namespace {
         parser_error_t err;
 
         err = json_parse(&json, transaction);
-        ASSERT_EQ( err, parser_too_many_tokens);
+        ASSERT_EQ( err, parser_json_too_many_tokens);
 
         err = tx_validate(&json);
         EXPECT_EQ(err, parser_json_missing_chain_id) << "Validation failed, error: " << parser_getErrorDescription(err);

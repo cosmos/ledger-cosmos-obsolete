@@ -29,27 +29,37 @@ CircleCI CLI should have instructed you to install Docker. Just in case, you can
 https://docs.docker.com/install/
 
 
-#### Ubuntu Dependencies
+#### OS Dependencies
+
+**Ubuntu**
+
 Install the following packages:
 ```
 sudo apt-get update && sudo apt-get -y install build-essential git sudo wget cmake libssl-dev libgmp-dev autoconf libtool python-pip
 ```
 
-#### OSX Dependencies
+**OSX**
+
 It is recommended that you install brew and xcode. 
 
 Additionally you will need to:
-
 
 ```
 brew install libusb
 ```
 
-#### Ledger Python Tools
+#### Python Tools
 
-Ledger firmware 1.5.5 requires ledgerblue >= 0.1.21. 
+To avoid pollution your host, it is recommended that you create a virtual environment. If you are using [Anaconda](https://www.anaconda.com/distribution/#download-section) (our preference), you can do something like:
 
-In most cases, `make deps` should be able to install all dependencies: 
+```shell script
+create -n ledger python=3.7
+conda activate ledger
+```
+
+Then you can safely install all the python dependencies in that enviroment. Ledger firmware 1.5.5 requires ledgerblue >= 0.1.21. 
+
+In most cases, `make deps` should be able to install everything: 
 
 ```bash
 make deps
