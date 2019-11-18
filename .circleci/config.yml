@@ -34,36 +34,6 @@ jobs:
       - run: git submodule update --init --recursive
       - run: make -C src/ledger-val
 
-  package_demo_user:
-    docker:
-      - image: zondax/ledger-docker-bolos
-    environment:
-      - BOLOS_SDK=/root/project/deps/nanos-secure-sdk
-      - BOLOS_ENV=/opt/bolos
-    steps:
-      - checkout
-      - run: git submodule update --init --recursive
-      - run: make -C src/ledger-user package
-      - run: sudo apt-get -y install zip
-      - run: zip -r demo_user_app.zip /root/project/src/ledger-user/pkgdemo
-      - store_artifacts:
-          path: demo_user_app.zip
-
-  package_demo_val:
-    docker:
-      - image: zondax/ledger-docker-bolos
-    environment:
-      - BOLOS_SDK=/root/project/deps/nanos-secure-sdk
-      - BOLOS_ENV=/opt/bolos
-    steps:
-      - checkout
-      - run: git submodule update --init --recursive
-      - run: make -C src/ledger-val package
-      - run: sudo apt-get -y install zip
-      - run: zip -r demo_val_app.zip /root/project/src/ledger-val/pkgdemo
-      - store_artifacts:
-          path: demo_val_app.zip
-
 workflows:
   version: 2
   build_all:
