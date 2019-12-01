@@ -4,11 +4,11 @@
 
 This repository contains:
 
-- Ledger Nano S/X Cosmos BOLOS app
-- Ledger Nano S/X Tendermint validator BOLOS app
-- Specs / Documentation 
-- C++ unit tests
-- Fuzzing scripts
+  - Ledger Nano S/X Cosmos BOLOS app
+  - Ledger Nano S/X Tendermint validator BOLOS app
+  - Specs / Documentation 
+  - C++ unit tests
+  - Fuzzing scripts
 
 Source code for apps is linked as submodules to allow for Ledger's build infrastructure.
 
@@ -34,7 +34,6 @@ The Cosmos app is already available in [Ledger Live](https://www.ledger.com/page
 
 ![](docs/img/cosmos_app3.png)
 
-
 ### Validator app
 
 The validator app is available in [Ledger Live](https://www.ledger.com/pages/ledger-live). 
@@ -43,13 +42,13 @@ The validator app is available in [Ledger Live](https://www.ledger.com/pages/led
 
 ![](docs/img/cosmos_app1.png)
 
-- Enable developer mode (last option):
+  - Enable developer mode (last option):
 
 ![](docs/img/cosmos_app2.png)
 
 To install, please follow the build instructions in the following section.
 
-- Now go back to manager and search for Tendermint:
+  - Now go back to manager and search for Tendermint:
 
 ![](docs/img/tendermint_app.png)
 
@@ -65,13 +64,13 @@ The following document provides more information on fuzzing the user app: [Fuzzi
 
 **Cosmos App**
 
-- [APDU Protocol](https://github.com/cosmos/ledger-cosmos-app/tree/master/docs/APDUSPEC.md)
-- [Transaction format](https://github.com/cosmos/ledger-cosmos-app/tree/master/docs/TXSPEC.md)
+  - [APDU Protocol](https://github.com/cosmos/ledger-cosmos-app/tree/master/docs/APDUSPEC.md)
+  - [Transaction format](https://github.com/cosmos/ledger-cosmos-app/tree/master/docs/TXSPEC.md)
 
 **Validator App**
 
 The target of this app are validators. The app signs votes/proposals via the Tendermint/Cosmos KMS (Key management system).
 
-- [APDU Protocol](https://github.com/tendermint/ledger-validator-app/blob/master/docs/APDUSPEC.md)
-- [Transaction format](https://github.com/tendermint/ledger-validator-app/blob/master/docs/TXSPEC.md)
-- [User interface](https://github.com/tendermint/ledger-validator-app/blob/master/docs/UISPEC.md)
+  - [APDU Protocol](https://github.com/tendermint/ledger-validator-app/blob/master/docs/APDUSPEC.md)
+  - [Transaction format](https://github.com/tendermint/ledger-validator-app/blob/master/docs/TXSPEC.md)
+  - [User interface](https://github.com/tendermint/ledger-validator-app/blob/master/docs/UISPEC.md)

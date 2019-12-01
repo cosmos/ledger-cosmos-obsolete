@@ -19,11 +19,11 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DOCKER_IMAGE=zondax/docker-fuzzing:latest
 CID=$(docker ps -q -f status=running -f name=^/${CONTAINER_NAME}$)
 
-echo $SCRIPTDIR
+echo "$SCRIPTDIR"
 
 if [ ! "${CID}" ]; then
   docker run -it --rm --name ${CONTAINER_NAME} \
-  -u $(id -u) -v ${SCRIPTDIR}/../../:/project \
+  -u "$(id -u)" -v ${SCRIPTDIR}/../../:/project \
   ${DOCKER_IMAGE}
 else
   docker exec -it ${CONTAINER_NAME} /bin/bash

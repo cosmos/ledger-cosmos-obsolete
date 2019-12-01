@@ -19,9 +19,9 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 BUILDDIR=$SCRIPTDIR/../../cmake-build-fuzz
 
 # Compile fuzzing stub
-rm -rf $BUILDDIR
-mkdir -p $BUILDDIR/syncdir
-cd $BUILDDIR
+rm -rf "$BUILDDIR"
+mkdir -p "$BUILDDIR/syncdir"
+cd "$BUILDDIR" || exit
 
 cmake  -DCMAKE_CXX_COMPILER=afl-clang-fast++ -DCMAKE_C_COMPILER=afl-clang-fast  ..
 make clean

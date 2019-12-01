@@ -16,7 +16,6 @@
 
 #include "gtest/gtest.h"
 #include <cstdio>
-#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -139,7 +138,7 @@ namespace {
     TEST(JsonParserTest, ArrayElementCount_objects) {
 
         auto transaction =
-            R"({"array":[{"amount":5,"denom":"photon"}, {"amount":5,"denom":"photon"}, {"amount":5,"denom":"photon"}]})";
+                R"({"array":[{"amount":5,"denom":"photon"}, {"amount":5,"denom":"photon"}, {"amount":5,"denom":"photon"}]})";
 
         parsed_json_t parsed_json;
         json_parse(&parsed_json, transaction);
@@ -180,7 +179,7 @@ namespace {
     TEST(JsonParserTest, ArrayElementGet_objects) {
 
         auto transaction =
-            R"({"array":[{"amount":5,"denom":"photon"}, {"amount":5,"denom":"photon"}, {"amount":5,"denom":"photon"}]})";
+                R"({"array":[{"amount":5,"denom":"photon"}, {"amount":5,"denom":"photon"}, {"amount":5,"denom":"photon"}]})";
 
         parsed_json_t parsed_json;
         json_parse(&parsed_json, transaction);
@@ -315,7 +314,7 @@ namespace {
         EXPECT_EQ(token_index, 1) << "Wrong token index";
         EXPECT_EQ(parsed_json.tokens[token_index].type, JSMN_STRING) << "Wrong token type returned";
         EXPECT_EQ(memcmp(transaction + parsed_json.tokens[token_index].start, "age", strlen("age")), 0)
-                        << "Wrong key returned";
+                            << "Wrong key returned";
     }
 
     TEST(TxValidationTest, ObjectElementGet_string) {
@@ -329,7 +328,7 @@ namespace {
         EXPECT_EQ(token_index, 8) << "Wrong token index";
         EXPECT_EQ(parsed_json.tokens[token_index].type, JSMN_STRING) << "Wrong token type returned";
         EXPECT_EQ(memcmp(transaction + parsed_json.tokens[token_index].start, "july", strlen("july")), 0)
-                        << "Wrong key returned";
+                            << "Wrong key returned";
     }
 
     TEST(TxValidationTest, ObjectElementGet_out_of_bounds_negative) {
@@ -374,7 +373,7 @@ namespace {
     TEST(TxValidationTest, ObjectGetValueCorrectFormat) {
 
         auto transaction =
-            R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
+                R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
         parsed_json_t parsed_json;
         json_parse(&parsed_json, transaction);
 

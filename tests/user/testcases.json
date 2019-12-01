@@ -3,14 +3,34 @@
     "name": "empty",
     "tx": "",
     "parsingErr": "No error",
-    "validationErr" : "JSON Missing chain_id",
+    "validationErr": "JSON Missing chain_id",
     "expected": []
   },
   {
     "name": "minimal",
-    "tx": {"account_number":"V1","chain_id":"V2","fee":{"amount":[{"a":"b"}, {"c":"d"}, {"x":"y"}],"gas":"V3"},"memo":"V4","msgs":[],"sequence":"V5"},
+    "tx": {
+      "account_number": "V1",
+      "chain_id": "V2",
+      "fee": {
+        "amount": [
+          {
+            "a": "b"
+          },
+          {
+            "c": "d"
+          },
+          {
+            "x": "y"
+          }
+        ],
+        "gas": "V3"
+      },
+      "memo": "V4",
+      "msgs": [],
+      "sequence": "V5"
+    },
     "parsingErr": "No error",
-    "validationErr" : "Unexpected field",
+    "validationErr": "Unexpected field",
     "expected": [
       "0 | Chain ID : V2",
       "1 | Account : V1",
@@ -22,9 +42,34 @@
   },
   {
     "name": "multipleMessages",
-    "tx": {"account_number":"V1","chain_id":"V2","fee":{"amount":[{"amount":"b","denom":"d"}],"gas":"V3"},"memo":"V4","msgs":[{"m1":"z1"},{"m2":"z2"},{"m3":"z3"}],"sequence":"V5"},
+    "tx": {
+      "account_number": "V1",
+      "chain_id": "V2",
+      "fee": {
+        "amount": [
+          {
+            "amount": "b",
+            "denom": "d"
+          }
+        ],
+        "gas": "V3"
+      },
+      "memo": "V4",
+      "msgs": [
+        {
+          "m1": "z1"
+        },
+        {
+          "m2": "z2"
+        },
+        {
+          "m3": "z3"
+        }
+      ],
+      "sequence": "V5"
+    },
     "parsingErr": "No error",
-    "validationErr" : "No error",
+    "validationErr": "No error",
     "expected": [
       "0 | Chain ID : V2",
       "1 | Account : V1",
@@ -39,9 +84,49 @@
   },
   {
     "name": "completeTransfer",
-    "tx": {"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"},
+    "tx": {
+      "account_number": "0",
+      "chain_id": "test-chain-1",
+      "fee": {
+        "amount": [
+          {
+            "amount": "5",
+            "denom": "photon"
+          }
+        ],
+        "gas": "10000"
+      },
+      "memo": "testmemo",
+      "msgs": [
+        {
+          "inputs": [
+            {
+              "address": "cosmosaccaddr1d9h8qat5e4ehc5",
+              "coins": [
+                {
+                  "amount": "10",
+                  "denom": "atom"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "address": "cosmosaccaddr1da6hgur4wse3jx32",
+              "coins": [
+                {
+                  "amount": "10",
+                  "denom": "atom"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sequence": "1"
+    },
     "parsingErr": "No error",
-    "validationErr" : "No error",
+    "validationErr": "No error",
     "expected": [
       "0 | Chain ID : test-chain-1",
       "1 | Account : 0",
@@ -53,13 +138,52 @@
       "7 | Source Coins : 10 atom",
       "8 | Dest Address : cosmosaccaddr1da6hgur4wse3jx32",
       "9 | Dest Coins : 10 atom"
-      ]
+    ]
   },
   {
     "name": "completeTransferNoMemo",
-    "tx": {"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"},
+    "tx": {
+      "account_number": "0",
+      "chain_id": "test-chain-1",
+      "fee": {
+        "amount": [
+          {
+            "amount": "5",
+            "denom": "photon"
+          }
+        ],
+        "gas": "10000"
+      },
+      "msgs": [
+        {
+          "inputs": [
+            {
+              "address": "cosmosaccaddr1d9h8qat5e4ehc5",
+              "coins": [
+                {
+                  "amount": "10",
+                  "denom": "atom"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "address": "cosmosaccaddr1da6hgur4wse3jx32",
+              "coins": [
+                {
+                  "amount": "10",
+                  "denom": "atom"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sequence": "1"
+    },
     "parsingErr": "No error",
-    "validationErr" : "JSON Missing memo",
+    "validationErr": "JSON Missing memo",
     "expected": [
       "0 | Chain ID : test-chain-1",
       "1 | Account : 0",
@@ -70,9 +194,49 @@
   },
   {
     "name": "completeTransferEmptyMemo",
-    "tx": {"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"},
+    "tx": {
+      "account_number": "0",
+      "chain_id": "test-chain-1",
+      "fee": {
+        "amount": [
+          {
+            "amount": "5",
+            "denom": "photon"
+          }
+        ],
+        "gas": "10000"
+      },
+      "memo": "",
+      "msgs": [
+        {
+          "inputs": [
+            {
+              "address": "cosmosaccaddr1d9h8qat5e4ehc5",
+              "coins": [
+                {
+                  "amount": "10",
+                  "denom": "atom"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "address": "cosmosaccaddr1da6hgur4wse3jx32",
+              "coins": [
+                {
+                  "amount": "10",
+                  "denom": "atom"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sequence": "1"
+    },
     "parsingErr": "No error",
-    "validationErr" : "No error",
+    "validationErr": "No error",
     "expected": [
       "0 | Chain ID : test-chain-1",
       "1 | Account : 0",
@@ -88,9 +252,73 @@
   },
   {
     "name": "multipleTransfers",
-    "tx": {"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"test2","coins":[{"amount":"20","denom":"bitcoin"}]}],"outputs":[{"address":"test3","coins":[{"amount":"50","denom":"ripple"}]}]}],"sequence":"1"},
+    "tx": {
+      "account_number": "0",
+      "chain_id": "test-chain-1",
+      "fee": {
+        "amount": [
+          {
+            "amount": "5",
+            "denom": "photon"
+          }
+        ],
+        "gas": "10000"
+      },
+      "memo": "testmemo",
+      "msgs": [
+        {
+          "inputs": [
+            {
+              "address": "cosmosaccaddr1d9h8qat5e4ehc5",
+              "coins": [
+                {
+                  "amount": "10",
+                  "denom": "atom"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "address": "cosmosaccaddr1da6hgur4wse3jx32",
+              "coins": [
+                {
+                  "amount": "10",
+                  "denom": "atom"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "address": "test2",
+              "coins": [
+                {
+                  "amount": "20",
+                  "denom": "bitcoin"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "address": "test3",
+              "coins": [
+                {
+                  "amount": "50",
+                  "denom": "ripple"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sequence": "1"
+    },
     "parsingErr": "No error",
-    "validationErr" : "No error",
+    "validationErr": "No error",
     "expected": [
       "0 | Chain ID : test-chain-1",
       "1 | Account : 0",
@@ -110,9 +338,36 @@
   },
   {
     "name": "delegation",
-    "tx" : {"account_number":"6571","chain_id":"cosmoshub-2","fee":{"amount":[{"amount":"5000","denom":"uatom"}],"gas":"200000"},"memo":"Delegated with Ledger from union.market","msgs":[{"type":"cosmos-sdk/MsgDelegate","value":{"amount":{"amount":"1000000","denom":"uatom"},"delegator_address":"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl","validator_address":"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"}}],"sequence":"1"},
+    "tx": {
+      "account_number": "6571",
+      "chain_id": "cosmoshub-2",
+      "fee": {
+        "amount": [
+          {
+            "amount": "5000",
+            "denom": "uatom"
+          }
+        ],
+        "gas": "200000"
+      },
+      "memo": "Delegated with Ledger from union.market",
+      "msgs": [
+        {
+          "type": "cosmos-sdk/MsgDelegate",
+          "value": {
+            "amount": {
+              "amount": "1000000",
+              "denom": "uatom"
+            },
+            "delegator_address": "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl",
+            "validator_address": "cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"
+          }
+        }
+      ],
+      "sequence": "1"
+    },
     "parsingErr": "No error",
-    "validationErr" : "No error",
+    "validationErr": "No error",
     "expected": [
       "0 | Chain ID : cosmoshub-2",
       "1 | Account : 6571",
@@ -130,10 +385,33 @@
   },
   {
     "name": "proposal",
-    "tx" : {"account_number":"2","chain_id":"local-testnet","fee":{"amount":[],"gas":"500000"},"memo":"abc","msgs":[{"description":"test","initial_deposit":[{"amount":"1","denom":"stake"}],"proposal_type":"Text","proposer":"cosmos101234567890abcdefghijklmnopqrstuvwxyz0","title":"test"}],"sequence":"0"},
+    "tx": {
+      "account_number": "2",
+      "chain_id": "local-testnet",
+      "fee": {
+        "amount": [],
+        "gas": "500000"
+      },
+      "memo": "abc",
+      "msgs": [
+        {
+          "description": "test",
+          "initial_deposit": [
+            {
+              "amount": "1",
+              "denom": "stake"
+            }
+          ],
+          "proposal_type": "Text",
+          "proposer": "cosmos101234567890abcdefghijklmnopqrstuvwxyz0",
+          "title": "test"
+        }
+      ],
+      "sequence": "0"
+    },
     "parsingErr": "No error",
-    "validationErr" : "No error",
-    "expected" : [
+    "validationErr": "No error",
+    "expected": [
       "0 | Chain ID : local-testnet",
       "1 | Account : 2",
       "2 | Sequence : 0",
@@ -151,10 +429,37 @@
   },
   {
     "name": "delegation2",
-    "tx" : {"account_number":"6571","chain_id":"cosmoshub-2","fee":{"amount":[{"amount":"5000","denom":"uatom"}],"gas":"200000"},"memo":"Delegated with Ledger from union.market","msgs":[{"type":"cosmos-sdk/MsgDelegate","value":{"amount":{"amount":"1000000","denom":"uatom"},"delegator_address":"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl","validator_address":"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"}}],"sequence":"0"},
+    "tx": {
+      "account_number": "6571",
+      "chain_id": "cosmoshub-2",
+      "fee": {
+        "amount": [
+          {
+            "amount": "5000",
+            "denom": "uatom"
+          }
+        ],
+        "gas": "200000"
+      },
+      "memo": "Delegated with Ledger from union.market",
+      "msgs": [
+        {
+          "type": "cosmos-sdk/MsgDelegate",
+          "value": {
+            "amount": {
+              "amount": "1000000",
+              "denom": "uatom"
+            },
+            "delegator_address": "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl",
+            "validator_address": "cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"
+          }
+        }
+      ],
+      "sequence": "0"
+    },
     "parsingErr": "No error",
-    "validationErr" : "No error",
-    "expected" : [
+    "validationErr": "No error",
+    "expected": [
       "0 | Chain ID : cosmoshub-2",
       "1 | Account : 6571",
       "2 | Sequence : 0",
@@ -171,19 +476,49 @@
   },
   {
     "name": "badcase",
-    "tx" : {"chain_id":"1234567890AB","fee":"1234"},
+    "tx": {
+      "chain_id": "1234567890AB",
+      "fee": "1234"
+    },
     "parsingErr": "No error",
-    "validationErr" : "JSON Missing sequence",
-    "expected" : [
+    "validationErr": "JSON Missing sequence",
+    "expected": [
       "0 | Chain ID : 1234567890AB"
     ]
   },
   {
     "name": "badcase2",
-    "tx" : {"account_number":"6571","chain_id":"cosmoshub-2","fee":{"amount":[{"amount":"5000","denom":"uatom"}],"gas":"200000"},"memo":"Delegated with Ledger from union.market","msgs":[{"type":"cosmos-sdk/MsgDelegate","value":{"amount":{"amount":"1000000","denom":"uatom"},"delegator_address":"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl","validator_address":"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"}}],"sequence":"0"},
+    "tx": {
+      "account_number": "6571",
+      "chain_id": "cosmoshub-2",
+      "fee": {
+        "amount": [
+          {
+            "amount": "5000",
+            "denom": "uatom"
+          }
+        ],
+        "gas": "200000"
+      },
+      "memo": "Delegated with Ledger from union.market",
+      "msgs": [
+        {
+          "type": "cosmos-sdk/MsgDelegate",
+          "value": {
+            "amount": {
+              "amount": "1000000",
+              "denom": "uatom"
+            },
+            "delegator_address": "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl",
+            "validator_address": "cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"
+          }
+        }
+      ],
+      "sequence": "0"
+    },
     "parsingErr": "No error",
-    "validationErr" : "No error",
-    "expected" : [
+    "validationErr": "No error",
+    "expected": [
       "0 | Chain ID : cosmoshub-2",
       "1 | Account : 6571",
       "2 | Sequence : 0",
@@ -200,18 +535,174 @@
   },
   {
     "name": "oldStackOverflow",
-    "tx" : {"1":[[[[[[[[[[[[{"2":"4"}]]]]]]]]]]]]},
+    "tx": {
+      "1": [
+        [
+          [
+            [
+              [
+                [
+                  [
+                    [
+                      [
+                        [
+                          [
+                            [
+                              {
+                                "2": "4"
+                              }
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
     "parsingErr": "No error",
-    "validationErr" : "JSON Missing chain_id",
-    "expected" : [
+    "validationErr": "JSON Missing chain_id",
+    "expected": [
     ]
   },
   {
     "name": "massive",
-    "tx" : {"account_number":"108","chain_id":"cosmoshub-2","fee":{"amount":[{"amount":"600","denom":"uatom"}],"gas":"200000"},"memo":"","msgs":[{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1qwl879nx9t6kef4supyazayf7vjhennyh568ys"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1x88j7vp2xnw3zec8ur3g4waxycyz7m0mahdv3p"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1ttfytaf43nkytzp8hkfjfgjc693ky4t3y2n2ku"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1wdrypwex63geqswmcy5qynv4w3z3dyef2qmyna"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper102ruvpv2srmunfffxavttxnhezln6fnc54at8c"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1sxx9mszve0gaedz5ld7qdkjkfv8z992ax69k08"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1ssm0d433seakyak8kcf93yefhknjleeds4y3em"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper13sduv92y3xdhy3rpmhakrc3v7t37e7ps9l0kpv"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper15urq2dtp9qce4fyc85m6upwm9xul3049e02707"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper14lultfckehtszvzw4ehu0apvsr77afvyju5zzy"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1k9a0cs97vul8w2vwknlfmpez6prv8klv03lv3d"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1kj0h4kn4z5xvedu2nd9c4a9a559wvpuvu0h6qn"}},{"type":"cosmos-sdk/MsgWithdrawDelegationReward","value":{"delegator_address":"cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh","validator_address":"cosmosvaloper1hjct6q7npsspsg3dgvzk3sdf89spmlpfdn6m9d"}}],"sequence":"106"},
+    "tx": {
+      "account_number": "108",
+      "chain_id": "cosmoshub-2",
+      "fee": {
+        "amount": [
+          {
+            "amount": "600",
+            "denom": "uatom"
+          }
+        ],
+        "gas": "200000"
+      },
+      "memo": "",
+      "msgs": [
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper1qwl879nx9t6kef4supyazayf7vjhennyh568ys"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper1x88j7vp2xnw3zec8ur3g4waxycyz7m0mahdv3p"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper1ttfytaf43nkytzp8hkfjfgjc693ky4t3y2n2ku"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper1wdrypwex63geqswmcy5qynv4w3z3dyef2qmyna"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper102ruvpv2srmunfffxavttxnhezln6fnc54at8c"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper1sxx9mszve0gaedz5ld7qdkjkfv8z992ax69k08"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper1ssm0d433seakyak8kcf93yefhknjleeds4y3em"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper13sduv92y3xdhy3rpmhakrc3v7t37e7ps9l0kpv"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper15urq2dtp9qce4fyc85m6upwm9xul3049e02707"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper14lultfckehtszvzw4ehu0apvsr77afvyju5zzy"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper1k9a0cs97vul8w2vwknlfmpez6prv8klv03lv3d"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper1kj0h4kn4z5xvedu2nd9c4a9a559wvpuvu0h6qn"
+          }
+        },
+        {
+          "type": "cosmos-sdk/MsgWithdrawDelegationReward",
+          "value": {
+            "delegator_address": "cosmos14lultfckehtszvzw4ehu0apvsr77afvyhgqhwh",
+            "validator_address": "cosmosvaloper1hjct6q7npsspsg3dgvzk3sdf89spmlpfdn6m9d"
+          }
+        }
+      ],
+      "sequence": "106"
+    },
     "parsingErr": "No error",
-    "validationErr" : "No error",
-    "expected" : [
+    "validationErr": "No error",
+    "expected": [
       "0 | Chain ID : cosmoshub-2",
       "1 | Account : 108",
       "2 | Sequence : 106",
