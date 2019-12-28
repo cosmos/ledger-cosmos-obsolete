@@ -20,7 +20,7 @@
 #include "common.h"
 
 parser_error_t parse_tx(parsed_json_t *parsed_json, const char *tx) {
-    return json_parse(parsed_json, tx);
+    return JSON_PARSE(parsed_json, tx);
 }
 
 std::vector<std::string> dumpUI(parser_context_t *ctx,

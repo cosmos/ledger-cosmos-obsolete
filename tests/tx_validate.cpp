@@ -30,14 +30,13 @@
 
 namespace {
     TEST(TxValidationTest, CorrectFormat) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -45,14 +44,13 @@ namespace {
     }
 
     TEST(TxValidationTest, MissingAccountNumber) {
-
         auto transaction =
             R"({"chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -61,14 +59,13 @@ namespace {
     }
 
     TEST(TxValidationTest, MissingChainId) {
-
         auto transaction =
             R"({"account_number":"0","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -76,14 +73,13 @@ namespace {
     }
 
     TEST(TxValidationTest, MissingFee) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"test-chain-1","fees":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -91,14 +87,13 @@ namespace {
     }
 
     TEST(TxValidationTest, MissingMsgs) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgsble":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -106,14 +101,13 @@ namespace {
     }
 
     TEST(TxValidationTest, MissingSequence) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}]})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -121,14 +115,13 @@ namespace {
     }
 
     TEST(TxValidationTest, Spaces_InTheMiddle) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"test-chain-1", "fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -136,14 +129,13 @@ namespace {
     }
 
     TEST(TxValidationTest, Spaces_AtTheFront) {
-
         auto transaction =
             R"({  "account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -151,14 +143,13 @@ namespace {
     }
 
     TEST(TxValidationTest, Spaces_AtTheEnd) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"  })";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -166,14 +157,13 @@ namespace {
     }
 
     TEST(TxValidationTest, Spaces_Lots) {
-
         auto transaction =
             R"({"account_number":"0",   "chain_id":"test-chain-1",    "fee":{"amount":    [{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -181,14 +171,13 @@ namespace {
     }
 
     TEST(TxValidationTest, AllowSpacesInString) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"    test-chain-1    ","fee":{"amount":[{"amount":"5","denom":"    photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -196,14 +185,13 @@ namespace {
     }
 
     TEST(TxValidationTest, SortedDictionary) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -211,14 +199,13 @@ namespace {
     }
 
     TEST(TxValidationTest, NotSortedDictionary_FirstElement) {
-
         auto transaction =
             R"({"chain_id":"test-chain-1","account_number":"0","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -226,14 +213,13 @@ namespace {
     }
 
     TEST(TxValidationTest, NotSortedDictionary_MiddleElement) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"test-chain-1","memo":"testmemo","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -241,14 +227,13 @@ namespace {
     }
 
     TEST(TxValidationTest, NotSortedDictionary_LastElement) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","sequence":"1","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}]})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -260,14 +245,13 @@ namespace {
 // We are reviewing the validation code and cosmos serialization to find the culprit.
 
     TEST(TxValidationTest, CosmosExample) {
-
         auto transaction =
             R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -275,13 +259,12 @@ namespace {
     }
 
     TEST(TxValidationTest, GaiaCLIissue) {
-
         auto transaction = R"({"account_number":"811","chain_id":"cosmoshub-1","fee":{"amount":[],"gas":"5000000"},"memo":"","msgs":[{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper14kn0kk33szpwus9nh8n87fjel8djx0y070ymmj","value":{"amount":"8000000000","denom":"uatom"}}}],"sequence":"1"})";
 
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ(err, parser_ok);
 
         err = tx_validate(&json);
@@ -289,7 +272,6 @@ namespace {
     }
 
     TEST(TxValidationTest, GaiaCLIissueBigTX) {
-
         auto transaction = R"({"account_number":"811","chain_id":"cosmoshub-1","fee":{"amount":[],"gas":"5000000"},"memo":"","msgs":[{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx",
   "validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx",
   "validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx","validator_address":"cosmosvaloper10e4vsut6suau8tk9m6dnrm0slgd6npe3jx5xpv","value":{"amount":"8000000000","denom":"uatom"}}},{"type":"cosmos-sdk/MsgDelegate","value":{"delegator_address":"cosmos13vfzpfmg6jgzfk4rke9glzpngrzucjtanq9awx",
@@ -317,7 +299,7 @@ namespace {
         parsed_json_t json;
         parser_error_t err;
 
-        err = json_parse(&json, transaction);
+        err = JSON_PARSE(&json, transaction);
         ASSERT_EQ( err, parser_json_too_many_tokens);
 
         err = tx_validate(&json);
