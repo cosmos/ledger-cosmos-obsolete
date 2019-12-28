@@ -51,8 +51,8 @@ file(GLOB_RECURSE FUZZING_SRC
         tests/util/common.cpp
         )
 
-add_library(json_parser STATIC ${LIB_SRC} ${JSMN_SRC})
-target_include_directories(json_parser PUBLIC
+add_library(app_lib STATIC ${LIB_SRC} ${JSMN_SRC})
+target_include_directories(app_lib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/deps/jsmn/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/src/lib
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/src
@@ -64,33 +64,41 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_executable(unittests ${TESTS_SRC})
 target_include_directories(unittests PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/src/lib
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/deps/jsmn/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/deps/ledger-zxlib/include
         ${gtest_SOURCE_DIR}/include
         ${gmock_SOURCE_DIR}/include
         ${CONAN_INCLUDE_DIRS_FMT}
         ${CONAN_INCLUDE_DIRS_JSONCPP}
         )
 
+target_link_libraries(unittests PRIVATE
+        gtest_main
+        app_lib
+        CONAN_PKG::fmt
+        CONAN_PKG::jsoncpp)
+
+add_test(unittests ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/unittests)
+set_tests_properties(unittests PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
 add_executable(fuzzing_stub ${FUZZING_SRC})
 target_include_directories(fuzzing_stub PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ledger/deps/jsmn/src
         )
-target_link_libraries(fuzzing_stub json_parser)
-
-add_test(unittests ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/unittests)
-set_tests_properties(unittests PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+target_link_libraries(fuzzing_stub app_lib)
 
 ###############################################################
 # Force tests to depend from app compiling
 ###############################################################
 
-set(DISABLE_DOCKER_BUILDS OFF CACHE BOOL "Disables Docker Builds")
-
-if (NOT DISABLE_DOCKER_BUILDS)
-    add_custom_target(ledger_app
-            COMMAND make build
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            )
-    add_dependencies(unittests ledger_app)
-endif ()
+#set(DISABLE_DOCKER_BUILDS OFF CACHE BOOL "Disables Docker Builds")
+#
+#if (NOT DISABLE_DOCKER_BUILDS)
+#    add_custom_target(ledger_app
+#            COMMAND make build
+#            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#            )
+#    add_dependencies(unittests ledger_app)
+#endif ()

@@ -15,62 +15,15 @@
 ********************************************************************************/
 
 #include <gmock/gmock.h>
+#include "util/testcases.h"
 
 #include <iostream>
-#include <fstream>
-#include <nlohmann/json.hpp>
+#include <memory>
 #include "lib/parser.h"
 #include "util/common.h"
 
 using ::testing::TestWithParam;
 using ::testing::Values;
-using json = nlohmann::json;
-
-typedef struct {
-    std::string name;
-    std::string tx;
-    std::string parsingErr;
-    std::string validationErr;
-    std::vector<std::string> expected;
-} testcase_t;
-
-class JsonTests : public ::testing::TestWithParam<testcase_t> {
-public:
-    struct PrintToStringParamName {
-        template<class ParamType>
-        std::string operator()(const testing::TestParamInfo<ParamType> &info) const {
-            auto p = static_cast<testcase_t>(info.param);
-            std::stringstream ss;
-            ss << p.name;
-            return ss.str();
-        }
-    };
-};
-
-std::vector<testcase_t> GetJsonTestCases() {
-    auto answer = std::vector<testcase_t>();
-
-    json j;
-    std::ifstream inFile("testcases.json");
-    EXPECT_TRUE(inFile.is_open()) << "Check that your working directory is pointing to the tests directory";
-    inFile >> j;
-
-    std::cout << "Number of testcases: " << j.size() << std::endl;
-
-    for (auto &item : j) {
-        std::string txStr = item["tx"].dump();
-
-        answer.push_back(testcase_t{
-            item["name"],
-            txStr,
-            item["parsingErr"],
-            item["validationErr"],
-            item["expected"],
-        });
-    }
-
-    return answer;
-}
 
 void validate_testcase(const testcase_t &tc) {
     parser_context_t ctx;
@@ -117,12 +70,27 @@ void check_testcase(const testcase_t &tc) {
     }
 }
 
-INSTANTIATE_TEST_CASE_P
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 
-(
+class JsonTests : public ::testing::TestWithParam<testcase_t> {
+public:
+    struct PrintToStringParamName {
+        template<class ParamType>
+        std::string operator()(const testing::TestParamInfo<ParamType> &info) const {
+            auto p = static_cast<testcase_t>(info.param);
+            std::stringstream ss;
+            ss << p.description;
+            return ss.str();
+        }
+    };
+};
+
+INSTANTIATE_TEST_SUITE_P (
     JsonTestCases,
     JsonTests,
-    ::testing::ValuesIn(GetJsonTestCases()),
+    ::testing::ValuesIn(GetJsonTestCases("testcases.json")),
     JsonTests::PrintToStringParamName()
 );
 
