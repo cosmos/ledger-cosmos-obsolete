@@ -6,12 +6,12 @@ jobs:
     steps:
       - checkout
       - run: git submodule update --init --recursive
-      - run: cmake -DDISABLE_DOCKER_BUILDS=ON . && make
+      - run: cmake -DDISABLE_DOCKER_BUILDS=ON -DCMAKE_BUILD_TYPE=Debug . && make
       # Unfortunately need to disable leak sanitizer https://github.com/google/sanitizers/issues/916
       # Still run all other ASAN components
       - run: GTEST_COLOR=1 ASAN_OPTIONS=detect_leaks=0 ctest -VV
 
-  build_ledger_user:
+  build_ledger:
     docker:
       - image: zondax/ledger-docker-bolos:latest
     environment:
@@ -20,23 +20,11 @@ jobs:
     steps:
       - checkout
       - run: git submodule update --init --recursive
-      - run: cd /home/test/project/src/ledger-user && make
-
-  build_ledger_val:
-    docker:
-      - image: zondax/ledger-docker-bolos:latest
-    environment:
-      - BOLOS_SDK=/home/test/project/deps/nanos-secure-sdk
-      - BOLOS_ENV=/opt/bolos
-    steps:
-      - checkout
-      - run: git submodule update --init --recursive
-      - run: cd /home/test/project/src/ledger-val && make
+      - run: cd /home/test/project/src/ledger && make
 
 workflows:
   version: 2
   build_all:
     jobs:
       - build
-      - build_ledger_user
-      - build_ledger_val
+      - build_ledger

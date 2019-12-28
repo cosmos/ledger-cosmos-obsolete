@@ -16,8 +16,7 @@
 
 .PHONY: all deps build clean load delete
 
-LEDGER_COSMOS_SRC=$(CURDIR)/src/ledger-user
-LEDGER_TENDERMINT_SRC=$(CURDIR)/src/ledger-val
+LEDGER_SRC=$(CURDIR)/src/ledger
 
 DOCKER_IMAGE=zondax/ledger-docker-bolos:latest
 DOCKER_BOLOS_SDK=/project/deps/nanos-secure-sdk
@@ -43,45 +42,31 @@ deps:
 	@echo "Install dependencies"
 	$(CURDIR)/src/install_deps.sh
 
-build_cosmos:
-	@cp $(LEDGER_COSMOS_SRC)/nanos_icon.gif $(LEDGER_COSMOS_SRC)/glyphs/icon_app.gif
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger-user)
+build:
+	@cp $(LEDGER_SRC)/nanos_icon.gif $(LEDGER_SRC)/glyphs/icon_app.gif
+	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger)
 
-build_cosmosX:
-	@cp $(LEDGER_COSMOS_SRC)/nanos_icon.gif $(LEDGER_COSMOS_SRC)/glyphs/icon_app.gif
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger-user)
+buildX:
+	@cp $(LEDGER_SRC)/nanos_icon.gif $(LEDGER_SRC)/glyphs/icon_app.gif
+	$(call run_docker_privileged,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger)
 
-build_tendermint:
-	@cp $(LEDGER_TENDERMINT_SRC)/nanos_icon.gif $(LEDGER_TENDERMINT_SRC)/glyphs/icon_app.gif
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger-val)
+clean:
+	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger clean)
 
-build_tendermintX:
-	@cp $(LEDGER_TENDERMINT_SRC)/nanos_icon.gif $(LEDGER_TENDERMINT_SRC)/glyphs/icon_app.gif
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger-val)
+shell:
+	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK) -t,bash)
 
-clean_cosmos:
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger-user clean)
+load: build
+	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger load)
 
-clean_tendermint:
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger-val clean)
+loadX:
+	$(call run_docker_privileged,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger load)
 
-load_cosmos: build_cosmos
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger-user load)
+delete:
+	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger delete)
 
-load_cosmosX: build_cosmosX
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger-user load)
-
-load_tendermint: build_tendermint
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger-val load)
-
-load_tendermintX: build_tendermintX
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger-val load)
-
-delete_cosmos:
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger-user delete)
-
-delete_tendermint:
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger-val delete)
+deleteX:
+	$(call run_docker_privileged,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger delete)
 
 # This target will initialize the device with the integration testing mnemonic
 dev_init:
@@ -101,6 +86,3 @@ dev_ca2:
 
 dev_ca_delete2:
 	@python -m ledgerblue.resetCustomCA --targetId 0x33000004
-
-clean: clean_cosmos clean_tendermint
-build: build_cosmos build_tendermint

@@ -36,7 +36,6 @@
 
 # Others
 cmake-build-debug/
-cmake-build-fuzz/
 \.idea/workspace\.xml
 \.idea/
 src/ledger/bin/
@@ -45,10 +44,25 @@ src/ledger/obj/
 src/goclient/vendor
 pkg/
 src/goclient/goclient
+
 src/ledger/pkgdemo/loaddemo\.sh
+
 src/ledger/pkgdemo/app\.hex
 
-\deps/*
-!\deps/nanos-secure-sdk
-build/
-\deps/nano2-sdk
+obj/app\.elf
+
+debug/app\.map
+
+debug/app\.asm
+
+bin/app\.hex
+
+bin/app\.elf
+
+src/glyphs\.h
+
+src/glyphs\.c
+
+bin/app.sha256
+
+bin/app.apdu

@@ -1,12 +1,6 @@
-[submodule "src/ledger-user"]
-	path = src/ledger-user
+[submodule "src/ledger"]
+	path = src/ledger
 	url = https://github.com/cosmos/ledger-cosmos-app
-[submodule "src/ledger-val"]
-	path = src/ledger-val
-	url = https://github.com/tendermint/ledger-validator-app.git
 [submodule "deps/nanos-secure-sdk"]
 	path = deps/nanos-secure-sdk
 	url = https://github.com/LedgerHQ/nanos-secure-sdk.git
-[submodule "deps/json"]
-	path = deps/json
-	url = https://github.com/nlohmann/json.git
