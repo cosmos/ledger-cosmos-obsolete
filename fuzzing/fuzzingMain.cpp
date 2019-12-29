@@ -17,7 +17,7 @@
 #include <lib/parser_common.h>
 #include <lib/parser.h>
 #include <fstream>
-#include "../tests/user/util/common.h"
+#include "../tests/util/common.h"
 
 #ifndef __AFL_LOOP
 #define __AFL_LOOP(x) (0)
