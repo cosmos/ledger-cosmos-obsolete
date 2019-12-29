@@ -37,10 +37,9 @@ namespace {
     TEST(TxParse, Tx_Traverse) {
         auto transaction = R"({"keyA":"123456", "keyB":"abcdefg", "keyC":""})";
 
-        parsed_json_t parsed_json;
-        parser_error_t err;
-
-        err = parse_tx(&parsed_json, transaction);
+        parser_tx_obj.tx = transaction;
+        parser_tx_obj.cache_valid = false;
+        parser_error_t err = JSON_PARSE(&parser_tx_obj.json, parser_tx_obj.tx);
         ASSERT_EQ(err, parser_ok);
 
         char key[100];
@@ -53,61 +52,60 @@ namespace {
 
         err = tx_traverse(0, &numChunks);
         EXPECT_EQ(err, parser_ok) << parser_getErrorDescription(err);
-        EXPECT_EQ(1, numChunks) << "Item not found";
-        EXPECT_EQ_STR(key, "keyB", "Invalid key")
-        EXPECT_EQ_STR(val, "abcdefg", "Invalid value")
+        EXPECT_EQ(numChunks, 1) << "Incorrect number of chunks";
+        EXPECT_EQ_STR(key, "keyB", "Incorrect key")
+        EXPECT_EQ_STR(val, "abcdefg", "Incorrect value")
 
         // Try second key - Second chunk
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 1, 4)
         parser_tx_obj.query.item_index = 1;
         err = tx_traverse(0, &numChunks);
-        EXPECT_EQ(err, parser_no_data) << parser_getErrorDescription(err);
-        EXPECT_EQ(numChunks, 0) << "Item not found";
+        EXPECT_EQ(err, parser_display_page_out_of_range) << parser_getErrorDescription(err);
+        EXPECT_EQ(numChunks, 1) << "Incorrect number of chunks";
 
         // Find first key
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4)
         parser_tx_obj.query.item_index = 0;
         err = tx_traverse(0, &numChunks);
         EXPECT_EQ(err, parser_ok) << parser_getErrorDescription(err);
-        EXPECT_EQ(1, numChunks) << "Item not found";
-        EXPECT_EQ_STR(key, "keyA", "Invalid key")
-        EXPECT_EQ_STR(val, "123456", "Invalid value")
+        EXPECT_EQ(numChunks, 1) << "Incorrect number of chunks";
+        EXPECT_EQ_STR(key, "keyA", "Incorrect key")
+        EXPECT_EQ_STR(val, "123456", "Incorrect value")
 
         // Try the same again
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4)
         parser_tx_obj.query.item_index = 0;
         err = tx_traverse(0, &numChunks);
         EXPECT_EQ(err, parser_ok) << parser_getErrorDescription(err);
-        EXPECT_EQ(1, numChunks) << "Item not found";
-        EXPECT_EQ_STR(key, "keyA", "Invalid key")
-        EXPECT_EQ_STR(val, "123456", "Invalid value")
+        EXPECT_EQ(numChunks, 1) << "Incorrect number of chunks";
+        EXPECT_EQ_STR(key, "keyA", "Incorrect key")
+        EXPECT_EQ_STR(val, "123456", "Incorrect value")
 
         // Try last key
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4)
         parser_tx_obj.query.item_index = 2;
         err = tx_traverse(0, &numChunks);
         EXPECT_EQ(err, parser_ok) << parser_getErrorDescription(err);
-        EXPECT_EQ(1, numChunks) << "Item not found";
-        EXPECT_EQ_STR(key, "keyC", "Invalid key")
-        EXPECT_EQ_STR(val, "", "Invalid value")
+        EXPECT_EQ(numChunks, 1) << "Incorrect number of chunks";
+        EXPECT_EQ_STR(key, "keyC", "Incorrect key")
+        EXPECT_EQ_STR(val, "", "Incorrect value")
     }
 
     TEST(TxParse, OutOfBoundsSmall) {
         auto transaction = R"({"keyA":"123456", "keyB":"abcdefg"})";
 
-        parsed_json_t parsed_json;
-        parser_error_t err;
-
-        err = parse_tx(&parsed_json, transaction);
+        parser_tx_obj.tx = transaction;
+        parser_tx_obj.cache_valid = false;
+        parser_error_t err = JSON_PARSE(&parser_tx_obj.json, parser_tx_obj.tx);
         ASSERT_EQ(err, parser_ok);
 
-        char key[100];
-        char val[100];
+        char key[1000];
+        char val[1000];
         uint8_t numChunks;
 
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 5, 4)
         err = tx_traverse(0, &numChunks);
-        EXPECT_EQ(err, parser_no_data) << "Item not found";
+        EXPECT_EQ(err, parser_display_page_out_of_range) << "Item not found";
 
         // We should find it.. but later tx_display should fail
         INIT_QUERY_CONTEXT(key, sizeof(key), val, sizeof(val), 0, 4)
@@ -119,10 +117,9 @@ namespace {
     TEST(TxParse, Count_Minimal) {
         auto transaction = R"({"account_number":"0"})";
 
-        parsed_json_t parsed_json;
-        parser_error_t err;
-
-        err = parse_tx(&parsed_json, transaction);
+        parser_tx_obj.tx = transaction;
+        parser_tx_obj.cache_valid = false;
+        parser_error_t err = JSON_PARSE(&parser_tx_obj.json, parser_tx_obj.tx);
         EXPECT_EQ(err, parser_ok);
 
         auto num_pages = tx_display_numItems();
@@ -133,10 +130,9 @@ namespace {
     TEST(TxParse, Tx_Page_Count) {
         auto transaction = R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
-        parsed_json_t parsed_json;
-        parser_error_t err;
-
-        err = parse_tx(&parsed_json, transaction);
+        parser_tx_obj.tx = transaction;
+        parser_tx_obj.cache_valid = false;
+        parser_error_t err = JSON_PARSE(&parser_tx_obj.json, parser_tx_obj.tx);
         EXPECT_EQ(err, parser_ok);
 
         auto num_pages = tx_display_numItems();
@@ -145,12 +141,11 @@ namespace {
 
     TEST(TxParse, Page_Count_MultipleMsgs) {
         auto transaction =
-            R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
+                R"({"account_number":"0","chain_id":"test-chain-1","fee":{"amount":[{"amount":"5","denom":"photon"}],"gas":"10000"},"memo":"testmemo","msgs":[{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]},{"inputs":[{"address":"cosmosaccaddr1d9h8qat5e4ehc5","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"cosmosaccaddr1da6hgur4wse3jx32","coins":[{"amount":"10","denom":"atom"}]}]}],"sequence":"1"})";
 
-        parsed_json_t parsed_json;
-        parser_error_t err;
-
-        err = parse_tx(&parsed_json, transaction);
+        parser_tx_obj.tx = transaction;
+        parser_tx_obj.cache_valid = false;
+        parser_error_t err = JSON_PARSE(&parser_tx_obj.json, parser_tx_obj.tx);
         EXPECT_EQ(err, parser_ok);
 
         EXPECT_EQ(22, tx_display_numItems()) << "Wrong number of items";
