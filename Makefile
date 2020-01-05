@@ -18,6 +18,7 @@
 
 LEDGER_SRC=$(CURDIR)/src/ledger
 
+DOCKER_APP_SRC=/project/src/ledger
 DOCKER_IMAGE=zondax/ledger-docker-bolos:latest
 DOCKER_BOLOS_SDK=/project/deps/nanos-secure-sdk
 DOCKER_BOLOS_SDKX=/project/deps/nano2-sdk
@@ -53,36 +54,36 @@ deps:
 
 build:
 	@cp $(LEDGER_SRC)/nanos_icon.gif $(LEDGER_SRC)/glyphs/icon_app.gif
-	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger)
+	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C $(DOCKER_APP_SRC))
 
 buildX:
 	@cp $(LEDGER_SRC)/nanos_icon.gif $(LEDGER_SRC)/glyphs/icon_app.gif
 	@convert $(LEDGER_SRC)/nanos_icon.gif -crop 14x14+1+1 +repage -negate $(LEDGER_SRC)/nanox_icon.gif
-	$(call run_docker,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger)
+	$(call run_docker,$(DOCKER_BOLOS_SDKX),make -C $(DOCKER_APP_SRC))
 
 clean:
-	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger clean)
+	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C $(DOCKER_APP_SRC) clean)
 
 shell:
 	$(call run_docker,$(DOCKER_BOLOS_SDK) -t,bash)
 
 debug: build
-	$(call run_docker,$(DOCKER_BOLOS_SDK),/home/test/speculos/speculos.py -d -n -t /project/src/ledger/bin/app.elf)
+	$(call run_docker,$(DOCKER_BOLOS_SDK),/home/test/speculos/speculos.py -d -n -t $(DOCKER_APP_SRC)/bin/app.elf)
 
 emu: build
-	$(call run_docker,$(DOCKER_BOLOS_SDK),/home/test/speculos/speculos.py -o -z 3 -v 8001 /project/src/ledger/bin/app.elf)
+	$(call run_docker,$(DOCKER_BOLOS_SDK),/home/test/speculos/speculos.py -o -z 3 -v 8001 $(DOCKER_APP_SRC)/bin/app.elf)
 
 load: build
-	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger load)
+	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C $(DOCKER_APP_SRC) load)
 
 loadX:
-	$(call run_docker,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger load)
+	$(call run_docker,$(DOCKER_BOLOS_SDKX),make -C $(DOCKER_APP_SRC) load)
 
 delete:
-	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger delete)
+	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C $(DOCKER_APP_SRC) delete)
 
 deleteX:
-	$(call run_docker,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger delete)
+	$(call run_docker,$(DOCKER_BOLOS_SDKX),make -C $(DOCKER_APP_SRC) delete)
 
 # This target will initialize the device with the integration testing mnemonic
 dev_init:
