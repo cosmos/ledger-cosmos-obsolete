@@ -27,16 +27,25 @@ SCP_PRIVKEY=ff701d781f43ce106f72dc26a46b6a83e053b5d07bb3d4ceab79c91ca822a66b
 
 all: build
 
-define run_docker_privileged
-	docker run -i --rm \
+define run_docker
+	docker run -it --rm \
 	--privileged \
 	-e SCP_PRIVKEY=$(SCP_PRIVKEY) \
-	-e BOLOS_SDK=$(1) -e BOLOS_ENV=/opt/bolos \
+	-e BOLOS_SDK=$(1) \
+	-e BOLOS_ENV=/opt/bolos \
+	-p 1234:1234 \
+	-p 8001:8001 \
+	-p 9998-9999:9998-9999 \
 	-u $(shell id -u) \
 	-v $(shell pwd):/project \
+	-e DISPLAY=$(shell echo ${DISPLAY}) \
+	-v /tmp/.X11-unix:/tmp/.X11-unix:ro \
 	$(DOCKER_IMAGE) \
-	$(2)
+	"$(2)"
 endef
+
+pull:
+	docker pull $(DOCKER_IMAGE)
 
 deps:
 	@echo "Install dependencies"
@@ -44,29 +53,36 @@ deps:
 
 build:
 	@cp $(LEDGER_SRC)/nanos_icon.gif $(LEDGER_SRC)/glyphs/icon_app.gif
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger)
+	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger)
 
 buildX:
 	@cp $(LEDGER_SRC)/nanos_icon.gif $(LEDGER_SRC)/glyphs/icon_app.gif
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger)
+	@convert $(LEDGER_SRC)/nanos_icon.gif -crop 14x14+1+1 +repage -negate $(LEDGER_SRC)/nanox_icon.gif
+	$(call run_docker,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger)
 
 clean:
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger clean)
+	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger clean)
 
 shell:
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK) -t,bash)
+	$(call run_docker,$(DOCKER_BOLOS_SDK) -t,bash)
+
+debug: build
+	$(call run_docker,$(DOCKER_BOLOS_SDK),/home/test/speculos/speculos.py -d -n -t /project/src/ledger/bin/app.elf)
+
+emu: build
+	$(call run_docker,$(DOCKER_BOLOS_SDK),/home/test/speculos/speculos.py -o -z 3 -v 8001 /project/src/ledger/bin/app.elf)
 
 load: build
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger load)
+	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger load)
 
 loadX:
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger load)
+	$(call run_docker,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger load)
 
 delete:
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger delete)
+	$(call run_docker,$(DOCKER_BOLOS_SDK),make -C /project/src/ledger delete)
 
 deleteX:
-	$(call run_docker_privileged,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger delete)
+	$(call run_docker,$(DOCKER_BOLOS_SDKX),make -C /project/src/ledger delete)
 
 # This target will initialize the device with the integration testing mnemonic
 dev_init:
