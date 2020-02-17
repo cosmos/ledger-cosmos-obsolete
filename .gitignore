@@ -42,11 +42,6 @@ cmake-build-fuzz/
 src/ledger/bin/
 src/ledger/debug/
 src/ledger/obj/
-src/goclient/vendor
-pkg/
-src/goclient/goclient
-src/ledger/pkgdemo/loaddemo\.sh
-src/ledger/pkgdemo/app\.hex
 
 \deps/*
 !\deps/nanos-secure-sdk
