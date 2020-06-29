@@ -1,3 +1,4 @@
+> This repo is archived as of June 29, 2020 but made available for historical record. If you are looking for the maintained version of this code please see [@cosmos/ledger-cosmos](https://github.com/cosmos/ledger-cosoms).
 # Ledger-Cosmos
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![CircleCI](https://circleci.com/gh/cosmos/ledger-cosmos/tree/master.svg?style=shield)](https://circleci.com/gh/cosmos/ledger-cosmos/tree/master)
